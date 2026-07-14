@@ -12,7 +12,7 @@ struct CardView: View {
         RoundedRectangle(cornerRadius: 20)
             .fill(.white)
             .frame(width: 300, height: 150)
-            .shadow(color: .black.opacity(0.25), radius: 10)
+            .shadow(color: .black.opacity(0.25), radius: 5)
             .overlay() {
                 VStack {
                     HStack {
@@ -50,7 +50,7 @@ struct MiniCardView: View {
         RoundedRectangle(cornerRadius: 20)
             .fill(.white)
             .frame(width: 200, height: 100)
-            .shadow(color: .black.opacity(0.25), radius: 10)
+            .shadow(color: .black.opacity(0.25), radius: 5)
             .overlay() {
                 Text("aaa")
                     .font(.title)
@@ -63,6 +63,8 @@ struct MiniCardView: View {
 #Preview {
     VStack {
         CardView()
+            .padding()
         MiniCardView()
+            .padding()
     }
 }

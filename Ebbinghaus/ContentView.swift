@@ -47,7 +47,7 @@ struct ResultView: View {
         }
         .padding()
         .border(.red)
-
+        
     }
 }
 
@@ -76,7 +76,7 @@ struct ProblemView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-//            .background(.gray)
+            //            .background(.gray)
             Spacer()
             if nowSolvePhase == .solving {
                 Button(action: {
@@ -225,17 +225,75 @@ let previewContainer: ModelContainer = {
     }
 }()
 
+enum ProblemSetPhase {
+    case phase1
+    case phase2
+    case phase3
+}
+
+
 struct AddProblemSetView: View {
+    
+    enum Field: Hashable {
+        case setName
+    }
+    
     @State private var setName: String = ""
+    @State private var nowPhase = ProblemSetPhase.phase1
     @Environment(\.dismiss) var dismiss
+    @FocusState private var focus: Field?
+    
     var body: some View {
         NavigationStack {
             VStack {
-                TextField("名前", text: $setName)
-                    .textFieldStyle(.automatic)
-                Button("Add") {
-                    
+                Spacer()
+                Text(nowPhase == .phase1 ? "問題セットの名前を入力してください" : nowPhase == .phase2 ? "問題を追加してください。" : "nil")
+                    .fontWeight(.thin)
+                
+                if nowPhase == .phase2 {
+                    Text("\(setName)")
+                        .fontWeight(.thin)
+                        .padding()
                 }
+                
+                Spacer()
+                // 問題セット名
+                if nowPhase == .phase1 {
+                    TextField("問題セット名を入力", text: $setName)
+                        .font(.largeTitle)
+                        .textFieldStyle(.plain)
+                        .focused($focus, equals: .setName)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.center)
+                    
+                } else if nowPhase == .phase2 {
+                    ScrollView {
+                        VStack {
+                            NavigationLink(destination: {
+                                ProblemCreatingView()
+                            }, label: {
+                                Circle()
+                                    .fill(.white)
+                                    .frame(width: 60, height: 60)
+                                    .shadow(
+                                        color: .black.opacity(0.25),
+                                        radius: 10, x: 0, y: 0
+                                    )
+                                    .overlay() {
+                                        Text("+")
+                                            .fontWeight(.thin)
+                                    }
+                                    .padding()
+                            })
+                        }
+                        .frame(
+                            maxWidth: .infinity,
+                            maxHeight: .infinity
+                        )
+                    }
+                }
+                
+                Spacer()
                 NavigationLink(destination: {
                     VStack {
                         Spacer()
@@ -256,11 +314,188 @@ struct AddProblemSetView: View {
                 }) {
                     Text("完成")
                 }
+                Button(action: {
+                    if nowPhase == .phase1 {
+                        nowPhase = .phase2
+                    } else if nowPhase == .phase2 {
+                        nowPhase = .phase3
+                    } else {
+                        dismiss()
+                    }
+                    
+                }, label: {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(.white)
+                        .shadow(color: .black.opacity(0.25), radius: 5)
+                        .frame(maxWidth: 350,  maxHeight: 50)
+                        .padding()
+                        .overlay() {
+                            Text("Next")
+                                .fontWeight(.thin)
+                                .foregroundStyle(.black)
+                        }
+                })
             }
-            .navigationTitle("新規作成")
+            //            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                focus = nil
+            }
+            .onAppear {
+                focus = .setName
+            }
+            .border(.red)
+            .toolbar {
+                ToolbarItem(
+                    placement: .topBarLeading,
+                    content: {
+                        if nowPhase == .phase2 {
+                            Button("戻る") {
+                                nowPhase = .phase1
+                            }
+                        }
+                    })
+            }
         }
     }
 }
+
+struct ProblemCreatingView: View {
+    @State private var problem = ""
+    @State private var answer = ""
+    @State private var keyword: [String] = []
+    @FocusState private var focus: Field?
+    @Environment(\.dismiss) var dismiss
+    
+    enum Field: Hashable {
+        case problem
+        case answer
+    }
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                Text("問題の作成をしてください。")
+                    .fontWeight(.thin)
+                VStack {
+                    HStack {
+                        Text("問題")
+                            .font(.largeTitle)
+                            .fontWeight(.thin)
+                        Spacer()
+                    }
+                    HStack {
+                        TextField("問題の内容を入力してください。", text: $problem, axis: .vertical)
+                            .textFieldStyle(.plain)
+                            .focused($focus, equals: .problem)
+                        Spacer()
+                    }
+                }
+                .padding()
+                VStack {
+                    HStack {
+                        Text("解答")
+                            .font(.largeTitle)
+                            .fontWeight(.thin)
+                        Spacer()
+                    }
+                    HStack {
+                        TextField("解答例を入力してください。", text: $answer, axis: .vertical)
+                            .textFieldStyle(.plain)
+                            .focused($focus, equals: .answer)
+                        Spacer()
+                    }
+                }
+                .padding()
+                VStack {
+                    HStack {
+                        Text("キーワード")
+                            .font(.largeTitle)
+                            .fontWeight(.thin)
+                        Spacer()
+                    }
+                        ForEach(keyword.indices, id: \.self) { idx in
+                            HStack {
+                                TextField("キーワード\(idx+1)", text: $keyword[idx], axis: .vertical)
+                                    .textFieldStyle(.plain)
+                                Spacer()
+                            }
+                        }
+                        .onDelete { indexSet in
+                            keyword.remove(atOffsets: indexSet)
+                        }
+                    Button (action: {
+                        keyword.append("")
+                    }, label: {
+                        Circle()
+                            .fill(.white)
+                            .frame(width: 60, height: 60)
+                            .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 0)
+                            .overlay() {
+                                Text("+")
+                                    .font(.largeTitle)
+                                    .fontWeight(.thin)
+                            }
+                    })
+                }
+                .padding()
+            }
+            .contentShape(Rectangle())
+            .onTapGesture{
+                focus = nil
+            }
+        }
+    }
+}
+
+struct ProblemCardView: View {
+    var body: some View {
+        Rectangle()
+            .fill(
+                Color(
+                    red: 237/255,
+                    green: 240/255,
+                    blue: 241/255
+                )
+            )
+            .frame(
+                width: 300,
+                height: 100
+            )
+            .overlay() {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("aaaaaaa")
+                            .font(.largeTitle)
+                        Text("bbbbb")
+                            .fontWeight(.thin)
+                    }
+                    Spacer()
+                }
+                .padding()
+            }
+            .overlay(alignment: .trailing) {
+                Text(">")
+                    .padding()
+                    .frame(maxWidth :50, maxHeight: .infinity)
+                    .border(.red)
+                    .background(
+                        LinearGradient(
+                            colors: [
+                                .clear,
+                                Color(
+                                    red: 237/255,
+                                    green: 240/255,
+                                    blue: 241/255
+                                )],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+            }
+    }
+}
+
 
 let container = try? ModelContainer(
     for: ProblemSet.self, ProblemData.self,
@@ -268,6 +503,8 @@ let container = try? ModelContainer(
 )
 
 #Preview {
-    ContentView()
-        .modelContainer(previewContainer)
+        ContentView()
+            .modelContainer(previewContainer)
+//        ProblemCardView()
+//    ProblemCreatingView()
 }
