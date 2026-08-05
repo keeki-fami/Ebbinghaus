@@ -87,7 +87,11 @@ struct AddProblemSetView: View {
 
                 Button(action: {
                     if nowPhase == .phase1 {
-                        nowPhase = .phase2
+                        if let _ = focus {
+                            focus = nil
+                        } else {
+                            nowPhase = .phase2
+                        }
                     } else if nowPhase == .phase2 {
 //                      nowPhase = .phase3
                         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
@@ -109,7 +113,7 @@ struct AddProblemSetView: View {
                         .frame(maxWidth: 350,  maxHeight: 50)
                         .padding()
                         .overlay() {
-                            Text("Next")
+                            Text(focus == nil ? "Next" : "決定")
                                 .fontWeight(.thin)
                                 .foregroundStyle(.black)
                         }

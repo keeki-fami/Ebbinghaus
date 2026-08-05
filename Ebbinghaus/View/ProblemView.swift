@@ -7,7 +7,11 @@
 import SwiftUI
 
 struct ProblemView: View {
+    enum Focus {
+        case textEd
+    }
     var problemSet: ProblemSet
+    @FocusState private var focus: Focus?
     @State private var nowSolvePhase: SolvePhase = .solving
     @State private var nowProblem: Int = 0
     @State private var inputText: String = ""
@@ -21,11 +25,16 @@ struct ProblemView: View {
             if problemSet.problem.count > 0 {
                 ScrollView {
                     Text("\(problemSet.problem[nowProblem].problem)")
-                    TextField(
-                        "解答",
-                        text: $inputText,
-                        axis: .vertical
-                    )
+                    TextEditor(text: $inputText)
+                        .frame(width: 350, height: 200)
+                        .overlay() {
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(.gray.opacity(0.5), lineWidth: 1)
+                        }
+                        .focused($focus, equals: .textEd)
+                        .padding()
+                    
+                    
                     .textFieldStyle(.roundedBorder)
                     if nowSolvePhase == .solved {
                         Text("\(problemSet.problem[nowProblem].answer)")
@@ -38,8 +47,12 @@ struct ProblemView: View {
         Spacer()
         if nowSolvePhase == .solving {
             Button(action: {
-                withAnimation {
-                    nowSolvePhase = .solved
+                if focus != nil {
+                    focus = nil
+                } else {
+                    withAnimation {
+                        nowSolvePhase = .solved
+                    }
                 }
             }, label: {
                 RoundedRectangle(cornerRadius: 10)
@@ -47,7 +60,7 @@ struct ProblemView: View {
                     .frame(width: 300, height: 50)
                     .shadow(color: .black.opacity(0.25), radius: 10)
                     .overlay() {
-                        Text("解答")
+                        Text(focus == nil ? "解答" : "OK")
                     }
                     .padding()
             })
