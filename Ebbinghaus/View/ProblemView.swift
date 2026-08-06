@@ -16,6 +16,7 @@ struct ProblemView: View {
     @State private var nowProblem: Int = 0
     @State private var inputText: String = ""
     @Binding var path: NavigationPath
+    @State private var isSuccess: Bool = false
     
     var body: some View {
         ProgressView(value: Double(nowProblem)/Double(problemSet.problem.count))
@@ -35,7 +36,7 @@ struct ProblemView: View {
                         .padding()
                     
                     
-                    .textFieldStyle(.roundedBorder)
+                        .textFieldStyle(.roundedBorder)
                     if nowSolvePhase == .solved {
                         Text("\(problemSet.problem[nowProblem].answer)")
                     }
@@ -45,68 +46,53 @@ struct ProblemView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         //            .background(.gray)
         Spacer()
-        if nowSolvePhase == .solving {
-            Button(action: {
+        if nowSolvePhase == .solved {
+            Button(isSuccess ? "不正解として処理する" : "正解として処理する") {
+                if nowProblem + 1 ==  problemSet.problem.count {
+                    path.append(Result.result)
+                } else {
+                    nowProblem += 1
+                    withAnimation {
+                        nowSolvePhase = .solving
+                    }
+                }
+            }
+        }
+        Button(action: {
+            if nowSolvePhase == .solved {
+                if nowProblem + 1 ==  problemSet.problem.count {
+                    path.append(Result.result)
+                } else {
+                    withAnimation {
+                        nowProblem += 1
+                    }
+                    nowSolvePhase = .solving
+                }
+            } else {
                 if focus != nil {
                     focus = nil
                 } else {
+                    // 問題の生後判定をする。
                     withAnimation {
                         nowSolvePhase = .solved
                     }
+
                 }
-            }, label: {
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(.white)
-                    .frame(width: 300, height: 50)
-                    .shadow(color: .black.opacity(0.25), radius: 10)
-                    .overlay() {
+            }
+        }, label: {
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.white)
+                .frame(width: 300, height: 50)
+                .shadow(color: .black.opacity(0.25), radius: 10)
+                .overlay() {
+                    if nowSolvePhase == .solved {
+                        Text("次へ")
+                    } else {
                         Text(focus == nil ? "解答" : "OK")
                     }
-                    .padding()
-            })
-        } else {
-            if nowProblem == problemSet.problem.count - 1 {
-                HStack {
-                    Button(action: {
-                        path.append(Result.result)
-                    }, label: {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(.red)
-                            .shadow(color: .black.opacity(0.25), radius: 10)
-                    })
-                    Button(action: {
-                        path.append(Result.result)
-                    }, label: {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(.green)
-                            .shadow(color: .black.opacity(0.25), radius: 10)
-                    })
                 }
-                .frame(width: 300, height: 50)
                 .padding()
-            } else {
-                HStack {
-                    Button(action: {
-                        handleButton()
-                        // TODO: 間違えたことにする
-                    }, label: {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(.red)
-                            .shadow(color: .black.opacity(0.25), radius: 10)
-                    })
-                    Button(action: {
-                        handleButton()
-                        // TODO: 成功用処理
-                    }, label: {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(.green)
-                            .shadow(color: .black.opacity(0.25), radius: 10)
-                    })
-                }
-                .frame(width: 300, height: 50)
-                .padding()
-            }
-        }
+        })
         //        .frame(maxWidth: .infinity, maxHeight: .infinity)
         
     }

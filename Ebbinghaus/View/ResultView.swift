@@ -15,6 +15,7 @@ struct ResultView: View {
                 .foregroundStyle(Color(red: 157/255, green: 157/255, blue: 157/255))
                 .fontWeight(.thin)
         }
+        .navigationBarBackButtonHidden(true)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .border(.red)
         Text("Next - 2222/2/2")
