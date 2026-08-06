@@ -48,37 +48,11 @@ struct ProblemView: View {
         Spacer()
         if nowSolvePhase == .solved {
             Button(isSuccess ? "不正解として処理する" : "正解として処理する") {
-                if nowProblem + 1 ==  problemSet.problem.count {
-                    path.append(Result.result)
-                } else {
-                    nowProblem += 1
-                    withAnimation {
-                        nowSolvePhase = .solving
-                    }
-                }
+                handleSubButton()
             }
         }
         Button(action: {
-            if nowSolvePhase == .solved {
-                if nowProblem + 1 ==  problemSet.problem.count {
-                    path.append(Result.result)
-                } else {
-                    withAnimation {
-                        nowProblem += 1
-                    }
-                    nowSolvePhase = .solving
-                }
-            } else {
-                if focus != nil {
-                    focus = nil
-                } else {
-                    // 問題の生後判定をする。
-                    withAnimation {
-                        nowSolvePhase = .solved
-                    }
-
-                }
-            }
+            handleMainButton()
         }, label: {
             RoundedRectangle(cornerRadius: 10)
                 .fill(.white)
@@ -94,16 +68,40 @@ struct ProblemView: View {
                 .padding()
         })
         //        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        
     }
-    func handleButton() {
-        withAnimation {
-            nowSolvePhase = .solved
+    
+    func handleMainButton() {
+        if nowSolvePhase == .solved {
+            if nowProblem + 1 ==  problemSet.problem.count {
+                path.append(Result.result)
+            } else {
+                withAnimation {
+                    nowProblem += 1
+                }
+                nowSolvePhase = .solving
+            }
+        } else {
+            if focus != nil {
+                focus = nil
+            } else {
+                // 正誤判定
+                withAnimation {
+                    nowSolvePhase = .solved
+                }
+
+            }
         }
-        if nowProblem+1 < problemSet.problem.count {
+    }
+    
+    func handleSubButton() {
+        if nowProblem + 1 ==  problemSet.problem.count {
+            path.append(Result.result)
+        } else {
+            nowProblem += 1
             withAnimation {
-                nowProblem+=1
+                nowSolvePhase = .solving
             }
         }
     }
 }
+
