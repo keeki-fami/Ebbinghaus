@@ -67,7 +67,6 @@ struct ProblemView: View {
                 }
                 .padding()
         })
-        //        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     func handleMainButton() {
@@ -85,10 +84,15 @@ struct ProblemView: View {
                 focus = nil
             } else {
                 // 正誤判定
+                if checkKeyword() {
+                    isSuccess = true
+                } else {
+                    isSuccess = false
+                }
                 withAnimation {
                     nowSolvePhase = .solved
                 }
-
+                
             }
         }
     }
@@ -102,6 +106,17 @@ struct ProblemView: View {
                 nowSolvePhase = .solving
             }
         }
+    }
+    
+    func checkKeyword() -> Bool {
+        var flag = true
+        let keywords = problemSet.problem[nowProblem].keyword
+        for word in keywords {
+            if !inputText.contains(word) {
+                flag = false
+            }
+        }
+        return flag
     }
 }
 
