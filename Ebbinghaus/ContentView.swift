@@ -25,7 +25,6 @@ struct ContentView: View {
     @State private var presented: [ProblemSet] = []
     @State var path = NavigationPath()
     
-    
     var body: some View {
         NavigationStack(path: $path) {
             ScrollView {
@@ -44,13 +43,13 @@ struct ContentView: View {
                         .onAppear {
                             print("problemSet")
                             print("path: \(path)")
-                            problemSet.forEach { print($0.setName, $0.rest, $0.problem.first?.problem ?? "nothing") }
                         }
 //                        .onChange(of: path) { path in
 //                            print(path)
 //                        }
                     }
                     .padding([.top], 10)
+
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
@@ -60,7 +59,13 @@ struct ContentView: View {
                 }, label: {
                     Circle()
                         .fill(.blue)
-                        .frame(width: 100, height: 100)
+                        .frame(width: 75, height: 75)
+                        .overlay() {
+                            Image(systemName: "plus")
+                                .resizable()
+                                .frame(width: 25, height: 25)
+                                .foregroundStyle(.white)
+                        }
                 })
                 .padding(30)
             }

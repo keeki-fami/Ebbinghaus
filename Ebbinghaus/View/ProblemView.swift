@@ -17,56 +17,102 @@ struct ProblemView: View {
     @State private var inputText: String = ""
     @Binding var path: NavigationPath
     @State private var isSuccess: Bool = false
+    @State private var isAnimated: Bool = false
+    @State private var checkList: [String: Bool] = .init()
+    
+    struct backgroundAnimator {
+        var opacity = 0.0
+    }
     
     var body: some View {
-        ProgressView(value: Double(nowProblem)/Double(problemSet.problem.count))
-            .padding()
-        Spacer()
-        Group {
-            if problemSet.problem.count > 0 {
-                ScrollView {
-                    Text("\(problemSet.problem[nowProblem].problem)")
-                    TextEditor(text: $inputText)
-                        .frame(width: 350, height: 200)
-                        .overlay() {
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(.gray.opacity(0.5), lineWidth: 1)
+        ZStack {
+            Rectangle()
+                .fill(isSuccess ? .green.opacity(0.5) : .red.opacity(0.5))
+                .keyframeAnimator(initialValue: backgroundAnimator(), trigger: isAnimated, content: { content, value in
+                    content
+                        .opacity(value.opacity)
+                    
+                } , keyframes: { _ in
+                    KeyframeTrack(\.opacity) {
+                        MoveKeyframe(0.5)
+                        CubicKeyframe(0.0, duration: 1)
+                    }
+                    
+                })
+            VStack {
+                ProgressView(value: Double(nowProblem)/Double(problemSet.problem.count))
+                    .padding()
+                Spacer()
+                Group {
+                    if problemSet.problem.count > 0 {
+                        ScrollView {
+                            Text("\(problemSet.problem[nowProblem].problem)")
+//                            TextEditor(text: $inputText)
+//                                .frame(width: 350, height: 200)
+//                                .overlay() {
+//                                    RoundedRectangle(cornerRadius: 10)
+////                                        .fill(.white.opacity(0.25).shadow(.inner(color: .black.opacity(0.25), radius: 5, x: 5, y: 5)))
+//                                        .stroke(.gray.opacity(0.5), lineWidth: 1)
+//                                }
+//                                .focused($focus, equals: .textEd)
+//                                .padding()
+                            TextField("回答を入力", text: $inputText, axis: .vertical)
+                                .textFieldStyle(textFields())
+                                .lineLimit(5...10)
+                                .focused($focus, equals: .textEd)
+                                .padding()
+//                                .padding()
+                            
+                                .textFieldStyle(.roundedBorder)
+                            if nowSolvePhase == .solved {
+                                VStack {
+                                    Text("答え")
+                                        .fontWeight(.thin)
+                                        .padding()
+                                    Text("\(problemSet.problem[nowProblem].answer)")
+                                        .padding()
+                                }
+                                LazyVStack {
+                                    Text("キーワードチェック")
+                                        .fontWeight(.thin)
+                                        .padding()
+                                    ForEach(problemSet.problem[nowProblem].keyword, id: \.self) { keyword in
+                                        if let check = checkList[keyword], !check {
+                                            Text("\(keyword) : ❌")
+                                        } else {
+                                            Text("\(keyword) : ✅")
+                                        }
+                                    }
+                                }
+                            }
                         }
-                        .focused($focus, equals: .textEd)
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                Spacer()
+                if nowSolvePhase == .solved {
+                    Button(isSuccess ? "不正解として処理する" : "正解として処理する") {
+                        handleSubButton()
+                    }
+                }
+                Button(action: {
+                    handleMainButton()
+                }, label: {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(.white)
+                        .frame(width: 300, height: 50)
+                        .shadow(color: .black.opacity(0.25), radius: 10)
+                        .overlay() {
+                            if nowSolvePhase == .solved {
+                                Text("次へ")
+                            } else {
+                                Text(focus == nil ? "解答" : "OK")
+                            }
+                        }
                         .padding()
-                    
-                    
-                        .textFieldStyle(.roundedBorder)
-                    if nowSolvePhase == .solved {
-                        Text("\(problemSet.problem[nowProblem].answer)")
-                    }
-                }
+                })
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        //            .background(.gray)
-        Spacer()
-        if nowSolvePhase == .solved {
-            Button(isSuccess ? "不正解として処理する" : "正解として処理する") {
-                handleSubButton()
-            }
-        }
-        Button(action: {
-            handleMainButton()
-        }, label: {
-            RoundedRectangle(cornerRadius: 10)
-                .fill(.white)
-                .frame(width: 300, height: 50)
-                .shadow(color: .black.opacity(0.25), radius: 10)
-                .overlay() {
-                    if nowSolvePhase == .solved {
-                        Text("次へ")
-                    } else {
-                        Text(focus == nil ? "解答" : "OK")
-                    }
-                }
-                .padding()
-        })
     }
     
     func handleMainButton() {
@@ -79,6 +125,7 @@ struct ProblemView: View {
                 }
                 nowSolvePhase = .solving
             }
+            inputText = ""
         } else {
             if focus != nil {
                 focus = nil
@@ -92,6 +139,7 @@ struct ProblemView: View {
                 withAnimation {
                     nowSolvePhase = .solved
                 }
+                isAnimated.toggle()
                 
             }
         }
@@ -111,12 +159,27 @@ struct ProblemView: View {
     func checkKeyword() -> Bool {
         var flag = true
         let keywords = problemSet.problem[nowProblem].keyword
-        for word in keywords {
+        checkList = Dictionary.init()
+        for (i, word) in keywords.enumerated() {
             if !inputText.contains(word) {
                 flag = false
+                checkList[word] = false
+            } else {
+                checkList[word] = true
             }
         }
         return flag
     }
 }
 
+//struct textFields: TextFieldStyle {
+//    func _body(configuration: TextField<Self._Label>) -> some View {
+//        configuration
+//            .overlay() {
+//                RoundedRectangle(cornerRadius: 5)
+//                    .stroke(.gray.opacity(0.5), lineWidth: 1)
+//                    .background(.white.opacity(0.25).shadow(.inner(color: .black.opacity(0.25), radius: 5, x: 5, y: 5)))
+//                    .allowsHitTesting(false)
+//            }
+//    }
+//}

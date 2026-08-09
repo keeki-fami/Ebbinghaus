@@ -150,15 +150,35 @@ struct AddProblemSetView: View {
             }
             .border(.red)
             .toolbar {
+#if os(macOS)
                 ToolbarItem(
-                    placement: .topBarLeading,
+                    placement: .automatic,
                     content: {
-                        if nowPhase == .phase2 {
+                        if nowPhase == .phase2 || nowPhase == .phase1 {
                             Button("戻る") {
-                                nowPhase = .phase1
+                                if nowPhase == .phase2 {
+                                    nowPhase = .phase1
+                                } else {
+                                    dismiss()
+                                }
                             }
                         }
                     })
+#else
+                ToolbarItem(
+                    placement: .topBarLeading,
+                    content: {
+                        if nowPhase == .phase2 || nowPhase == .phase1 {
+                            Button("戻る") {
+                                if nowPhase == .phase2 {
+                                    nowPhase = .phase1
+                                } else {
+                                    dismiss()
+                                }
+                            }
+                        }
+                    })
+#endif
             }
         }
     }
