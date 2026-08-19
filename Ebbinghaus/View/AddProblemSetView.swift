@@ -95,7 +95,7 @@ struct AddProblemSetView: View {
                     } else if nowPhase == .phase2 {
 //                      nowPhase = .phase3
                         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
-                        let problemset = ProblemSet(setName: setName, problem: problemCreatingViewModel.problems, notifyDate: tomorrow, status: .phase1)
+                        let problemset = ProblemSet(setName: setName, problem: problemCreatingViewModel.problems, notifyDate: tomorrow.timeIntervalSince1970, status: .phase1)
                         
                         modelContext.insert(problemset)
                         problemset.problem.forEach {

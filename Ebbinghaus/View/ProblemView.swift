@@ -19,6 +19,7 @@ struct ProblemView: View {
     @State private var isSuccess: Bool = false
     @State private var isAnimated: Bool = false
     @State private var checkList: [String: Bool] = .init()
+
     
     struct backgroundAnimator {
         var opacity = 0.0
@@ -47,15 +48,7 @@ struct ProblemView: View {
                     if problemSet.problem.count > 0 {
                         ScrollView {
                             Text("\(problemSet.problem[nowProblem].problem)")
-//                            TextEditor(text: $inputText)
-//                                .frame(width: 350, height: 200)
-//                                .overlay() {
-//                                    RoundedRectangle(cornerRadius: 10)
-////                                        .fill(.white.opacity(0.25).shadow(.inner(color: .black.opacity(0.25), radius: 5, x: 5, y: 5)))
-//                                        .stroke(.gray.opacity(0.5), lineWidth: 1)
-//                                }
-//                                .focused($focus, equals: .textEd)
-//                                .padding()
+                            
                             TextField("回答を入力", text: $inputText, axis: .vertical)
                                 .textFieldStyle(textFields())
                                 .lineLimit(5...10)
@@ -115,10 +108,35 @@ struct ProblemView: View {
         }
     }
     
+    func updateProblemSetStatus() {
+        let nowPhase = problemSet.status
+        switch nowPhase {
+        case .phase1:
+            problemSet.status = .phase2
+            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*3
+        case .phase2:
+            problemSet.status = .phase3
+            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*7
+        case .phase3:
+            problemSet.status = .phase4
+            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*14
+        case .phase4:
+            problemSet.status = .phase5
+            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*30
+        case .phase5:
+            print("aaa")
+        
+        }
+    }
+    
     func handleMainButton() {
         if nowSolvePhase == .solved {
             if nowProblem + 1 ==  problemSet.problem.count {
+                if problemSet.notifyDate - Date().timeIntervalSince1970 <= 60*60*24 {
+                    updateProblemSetStatus()
+                }
                 path.append(Result.result)
+                
             } else {
                 withAnimation {
                     nowProblem += 1

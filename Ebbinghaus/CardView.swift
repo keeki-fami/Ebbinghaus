@@ -47,7 +47,7 @@ struct CardView: View {
                                         .padding([.leading], 2)
                                 } else {
                                     Circle()
-                                        .fill(.gray)
+                                        .fill(phase.rawValue >= i ? (phase.rawValue == i ? .yellow : .green) : .gray)
                                         .frame(width: 10, height: 10)
                                 }
                             }

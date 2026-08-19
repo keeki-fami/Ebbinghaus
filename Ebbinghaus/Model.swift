@@ -49,18 +49,17 @@ enum Phase: Int, Codable {
 class ProblemSet: Identifiable, Hashable {
     var setName: String
     @Relationship(deleteRule: .cascade) var problem: [ProblemData]
-    var notifyDate: Date
+    var notifyDate: TimeInterval
     var status: Phase
     @Attribute(.unique)
     var id: String
     var counter: Int
+    
     var rest: TimeInterval {
-        let date = Date()
-        let restDate = notifyDate.timeIntervalSince(date)
-        return restDate > 0 ? restDate : 0
+        notifyDate - Date().timeIntervalSince1970
     }
     
-    init(setName: String, problem: [ProblemData], notifyDate: Date, status: Phase) {
+    init(setName: String, problem: [ProblemData], notifyDate: TimeInterval, status: Phase) {
         self.setName = setName
         self.problem = problem
         self.notifyDate = notifyDate

@@ -17,22 +17,83 @@ enum Result: Hashable {
     case result
 }
 
+extension Date {
+    static func - (lhs: Date, rhs: Date) -> TimeInterval {
+        return lhs.timeIntervalSince1970 - rhs.timeIntervalSince1970
+    }
+}
+
 struct ContentView: View {
     @Environment(\.modelContext) private var context
-    @Query private var problemSet: [ProblemSet]
+//    @Query private var problemSet: [ProblemSet]
     @State private var isSheet = false
     @State private var isNavigation = false
     @State private var presented: [ProblemSet] = []
     @State var path = NavigationPath()
+    @State private var alert = false
+    @State private var problem: ProblemSet?
+    @Query private var havetoDoProblemSet: [ProblemSet]
+    @Query private var dontHaveToDoProblemSet: [ProblemSet]
+    
+    
+    init() {
+        let date = Date().timeIntervalSince1970
+        _havetoDoProblemSet = Query(filter: #Predicate<ProblemSet>{ item in
+            item.notifyDate - date <= 60*60*24.0
+        })
+        _dontHaveToDoProblemSet = Query(filter: #Predicate<ProblemSet> { item in
+            item.notifyDate - date > 60*60*24.0
+        })
+    }
     
     var body: some View {
         NavigationStack(path: $path) {
             ScrollView {
                 Group {
-                    ForEach(problemSet, id: \.id) { set in
+                    if havetoDoProblemSet.isEmpty {
+                        VStack {
+                            Spacer()
+                            Text("🎉")
+                            Spacer()
+                            Text("Good job!")
+                                .foregroundStyle(.blue)
+                                .font(.title)
+                                .fontWeight(.bold)
+                            Text("やるべきことは全て終了しました！")
+                                .fontWeight(.thin)
+                                .font(.body)
+                                .foregroundStyle(.gray)
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: 200)
+                    } else {
+                        ForEach(havetoDoProblemSet, id: \.id) { set in
+                            Button(action: {
+                                print("appending to path: \(set)")
+                                path.append(set)
+                            }, label: {
+                                CardView(
+                                    setName: set.setName,
+                                    rest: set.rest,
+                                    phase: set.status,
+                                )
+                            })
+                            
+                            //                        .onChange(of: path) { path in
+                            //                            print(path)
+                            //                        }
+                        }
+                        .padding([.top], 10)
+                    }
+                    Text("- 今後やるもの -")
+                        .foregroundStyle(.gray)
+                        .fontWeight(.thin)
+                        .padding()
+                    ForEach(dontHaveToDoProblemSet, id: \.id) { set in
                         Button(action: {
                             print("appending to path: \(set)")
-                            path.append(set)
+                            problem = set
+                            alert = true
                         }, label: {
                             CardView(
                                 setName: set.setName,
@@ -44,12 +105,12 @@ struct ContentView: View {
                             print("problemSet")
                             print("path: \(path)")
                         }
-//                        .onChange(of: path) { path in
-//                            print(path)
-//                        }
+                        //                        .onChange(of: path) { path in
+                        //                            print(path)
+                        //                        }
                     }
                     .padding([.top], 10)
-
+                    
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
@@ -76,6 +137,18 @@ struct ContentView: View {
                 ResultView(path: $path)
             }
             .navigationTitle("Home")
+            .alert("注意" , isPresented: $alert) {
+                Button("キャンセル") {
+                    
+                }
+                Button("始める") {
+                    if let problem = problem {
+                        path.append(problem)
+                    }
+                }
+            } message: {
+                Text("今回はphaseが更新されません")
+            }
             
         }
         .sheet(isPresented: $isSheet) {
@@ -100,7 +173,7 @@ let previewContainer: ModelContainer = {
                     ProblemData(problem: "2+1=", answer: "3", keyword: ["3"]),
                     ProblemData(problem: "3+1=", answer: "4", keyword: ["4"]),
                     ProblemData(problem: "4+1=", answer: "5", keyword: ["5"])],
-                notifyDate: Date(),
+                notifyDate: Date().timeIntervalSince1970,
                 status: .phase1
             )
         )
@@ -108,7 +181,7 @@ let previewContainer: ModelContainer = {
             ProblemSet(
                 setName: "Math",
                 problem: [ProblemData(problem: "2+2=", answer: "4", keyword: ["4"])],
-                notifyDate: Date(),
+                notifyDate: Date().timeIntervalSince1970,
                 status: .phase1
             )
         )
@@ -131,8 +204,8 @@ let container = try? ModelContainer(
 )
 
 #Preview {
-        ContentView()
-            .modelContainer(previewContainer)
-//        ProblemCardView()
-//    ProblemCreatingView()
+    ContentView()
+        .modelContainer(previewContainer)
+    //        ProblemCardView()
+    //    ProblemCreatingView()
 }
