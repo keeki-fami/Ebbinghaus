@@ -34,6 +34,7 @@ struct ContentView: View {
     @State private var problem: ProblemSet?
     @Query private var havetoDoProblemSet: [ProblemSet]
     @Query private var dontHaveToDoProblemSet: [ProblemSet]
+    @AppStorage("isUpdateStatus") var isUpdateStatus: Bool = true
     
     
     init() {
@@ -69,6 +70,7 @@ struct ContentView: View {
                     } else {
                         ForEach(havetoDoProblemSet, id: \.id) { set in
                             Button(action: {
+                                isUpdateStatus = true
                                 print("appending to path: \(set)")
                                 path.append(set)
                             }, label: {
@@ -78,6 +80,7 @@ struct ContentView: View {
                                     phase: set.status,
                                 )
                             })
+                            
                             
                             //                        .onChange(of: path) { path in
                             //                            print(path)
@@ -91,6 +94,7 @@ struct ContentView: View {
                         .padding()
                     ForEach(dontHaveToDoProblemSet, id: \.id) { set in
                         Button(action: {
+                            isUpdateStatus = false
                             print("appending to path: \(set)")
                             problem = set
                             alert = true
@@ -101,10 +105,10 @@ struct ContentView: View {
                                 phase: set.status,
                             )
                         })
-                        .onAppear {
-                            print("problemSet")
-                            print("path: \(path)")
+                        .onAppear() {
+                            print("rest - \(set.setName): \(set.rest)")
                         }
+                        
                         //                        .onChange(of: path) { path in
                         //                            print(path)
                         //                        }

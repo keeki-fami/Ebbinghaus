@@ -148,7 +148,6 @@ struct AddProblemSetView: View {
             .onAppear {
                 focus = .setName
             }
-            .border(.red)
             .toolbar {
 #if os(macOS)
                 ToolbarItem(

@@ -7,6 +7,19 @@
 
 import SwiftUI
 
+struct testBackground: View {
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .fill(.gray)
+                .ignoresSafeArea()
+            
+            Text("aaa")
+            Text("bbb")
+        }
+    }
+}
+
 struct ClickEffectTestView: View {
     @State private var effect = false
     @State private var counter = 0
@@ -127,7 +140,8 @@ struct textFields: TextFieldStyle {
     }
 }
 #Preview {
-    Tester()
+    testBackground()
+//    Tester()
 //    ClickEffectTestView()
 //    TextEditorText()
 }

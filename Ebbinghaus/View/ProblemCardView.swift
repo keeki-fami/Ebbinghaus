@@ -38,7 +38,6 @@ struct ProblemCardView: View {
                 Text(">")
                     .padding()
                     .frame(maxWidth :50, maxHeight: .infinity)
-                    .border(.red)
                     .background(
                         LinearGradient(
                             colors: [

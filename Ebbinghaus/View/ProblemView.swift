@@ -19,7 +19,7 @@ struct ProblemView: View {
     @State private var isSuccess: Bool = false
     @State private var isAnimated: Bool = false
     @State private var checkList: [String: Bool] = .init()
-
+    
     
     struct backgroundAnimator {
         var opacity = 0.0
@@ -27,19 +27,20 @@ struct ProblemView: View {
     
     var body: some View {
         ZStack {
-            Rectangle()
-                .fill(isSuccess ? .green.opacity(0.5) : .red.opacity(0.5))
-                .keyframeAnimator(initialValue: backgroundAnimator(), trigger: isAnimated, content: { content, value in
-                    content
-                        .opacity(value.opacity)
-                    
-                } , keyframes: { _ in
-                    KeyframeTrack(\.opacity) {
-                        MoveKeyframe(0.5)
-                        CubicKeyframe(0.0, duration: 1)
-                    }
-                    
-                })
+            //            Rectangle()
+            //                .fill(isSuccess ? .green.opacity(0.5) : .red.opacity(0.5))
+            //                .ignoresSafeArea(.keyboard)
+            //                .keyframeAnimator(initialValue: backgroundAnimator(), trigger: isAnimated, content: { content, value in
+            //                    content
+            //                        .opacity(value.opacity)
+            //
+            //                } , keyframes: { _ in
+            //                    KeyframeTrack(\.opacity) {
+            //                        MoveKeyframe(0.5)
+            //                        CubicKeyframe(0.0, duration: 1)
+            //                    }
+            //
+            //                })
             VStack {
                 ProgressView(value: Double(nowProblem)/Double(problemSet.problem.count))
                     .padding()
@@ -54,9 +55,8 @@ struct ProblemView: View {
                                 .lineLimit(5...10)
                                 .focused($focus, equals: .textEd)
                                 .padding()
-//                                .padding()
+                            //                                .padding()
                             
-                                .textFieldStyle(.roundedBorder)
                             if nowSolvePhase == .solved {
                                 VStack {
                                     Text("答え")
@@ -105,6 +105,21 @@ struct ProblemView: View {
                         .padding()
                 })
             }
+            .background(
+                (isSuccess ? Color.green.opacity(0.5) : Color.red.opacity(0.5))
+                    .ignoresSafeArea()
+                    .keyframeAnimator(initialValue: backgroundAnimator(), trigger: isAnimated, content: { content, value in
+                        content
+                            .opacity(value.opacity)
+                        
+                    } , keyframes: { _ in
+                        KeyframeTrack(\.opacity) {
+                            MoveKeyframe(0.5)
+                            CubicKeyframe(0.0, duration: 1)
+                        }
+                        
+                    })
+            )
         }
     }
     
@@ -125,14 +140,14 @@ struct ProblemView: View {
             problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*30
         case .phase5:
             print("aaa")
-        
+            
         }
     }
     
     func handleMainButton() {
         if nowSolvePhase == .solved {
             if nowProblem + 1 ==  problemSet.problem.count {
-                if problemSet.notifyDate - Date().timeIntervalSince1970 <= 60*60*24 {
+                if UserDefaults.standard.bool(forKey: "isUpdateStatus") {
                     updateProblemSetStatus()
                 }
                 path.append(Result.result)
