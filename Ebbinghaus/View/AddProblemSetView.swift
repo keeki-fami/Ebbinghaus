@@ -30,11 +30,11 @@ struct AddProblemSetView: View {
             VStack {
                 Spacer()
                 Text(nowPhase == .phase1 ? "問題セットの名前を入力してください" : nowPhase == .phase2 ? "問題を追加してください。" : "nil")
-                    .fontWeight(.thin)
+                    .fontWeight(.medium)
                 
                 if nowPhase == .phase2 {
                     Text("\(setName)")
-                        .fontWeight(.thin)
+                        .fontWeight(.medium)
                         .padding()
                 }
                 
@@ -71,7 +71,7 @@ struct AddProblemSetView: View {
                                     )
                                     .overlay() {
                                         Text("+")
-                                            .fontWeight(.thin)
+                                            .fontWeight(.medium)
                                     }
                                     .padding()
                             })
@@ -101,6 +101,7 @@ struct AddProblemSetView: View {
                         problemset.problem.forEach {
                             $0.problemSet = problemset
                         }
+                        
                         path.append(Screen.complete)
                     } else {
                         dismiss()
@@ -114,7 +115,7 @@ struct AddProblemSetView: View {
                         .padding()
                         .overlay() {
                             Text(focus == nil ? "Next" : "決定")
-                                .fontWeight(.thin)
+                                .fontWeight(.medium)
                                 .foregroundStyle(.black)
                         }
                 })
@@ -137,7 +138,7 @@ struct AddProblemSetView: View {
                     }
                     .padding(30)
                 }
-                .fontWeight(.thin)
+                .fontWeight(.medium)
             })
             
             //            .frame(maxWidth: .infinity, maxHeight: .infinity)

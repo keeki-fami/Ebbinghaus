@@ -38,12 +38,12 @@ struct ProblemCreatingView: View {
         NavigationStack {
             ScrollView {
                 Text("問題の作成をしてください。")
-                    .fontWeight(.thin)
+                    .fontWeight(.medium)
                 VStack {
                     HStack {
                         Text("問題")
                             .font(.largeTitle)
-                            .fontWeight(.thin)
+                            .fontWeight(.medium)
                         Spacer()
                     }
                     HStack {
@@ -58,7 +58,7 @@ struct ProblemCreatingView: View {
                     HStack {
                         Text("解答")
                             .font(.largeTitle)
-                            .fontWeight(.thin)
+                            .fontWeight(.medium)
                         Spacer()
                     }
                     HStack {
@@ -73,7 +73,7 @@ struct ProblemCreatingView: View {
                     HStack {
                         Text("キーワード")
                             .font(.largeTitle)
-                            .fontWeight(.thin)
+                            .fontWeight(.medium)
                         Spacer()
                     }
                         ForEach(keyword.indices, id: \.self) { idx in
@@ -97,7 +97,7 @@ struct ProblemCreatingView: View {
                             .overlay() {
                                 Text("+")
                                     .font(.largeTitle)
-                                    .fontWeight(.thin)
+                                    .fontWeight(.medium)
                             }
                     })
                 }
@@ -128,7 +128,7 @@ struct ProblemCreatingView: View {
                         .padding()
                         .overlay() {
                             Text(!(problem.isEmpty || answer.isEmpty) && focus == nil ? "追加" : "決定")
-                                .fontWeight(.thin)
+                                .fontWeight(.medium)
                                 .foregroundStyle(!(problem.isEmpty || answer.isEmpty) && focus == nil ? .white : .black)
                         }
                 })

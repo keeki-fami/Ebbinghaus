@@ -28,7 +28,7 @@ struct ProblemCardView: View {
                         Text("\(problem)")
                             .font(.largeTitle)
                         Text("\(answer)")
-                            .fontWeight(.thin)
+                            .fontWeight(.medium)
                     }
                     Spacer()
                 }

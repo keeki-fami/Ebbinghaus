@@ -25,7 +25,7 @@ extension Date {
 
 struct ContentView: View {
     @Environment(\.modelContext) private var context
-//    @Query private var problemSet: [ProblemSet]
+    //    @Query private var problemSet: [ProblemSet]
     @State private var isSheet = false
     @State private var isNavigation = false
     @State private var presented: [ProblemSet] = []
@@ -61,36 +61,66 @@ struct ContentView: View {
                                 .font(.title)
                                 .fontWeight(.bold)
                             Text("やるべきことは全て終了しました！")
-                                .fontWeight(.thin)
+                                .fontWeight(.medium)
                                 .font(.body)
                                 .foregroundStyle(.gray)
                             Spacer()
                         }
                         .frame(maxWidth: .infinity, maxHeight: 200)
                     } else {
-                        ForEach(havetoDoProblemSet, id: \.id) { set in
-                            Button(action: {
-                                isUpdateStatus = true
-                                print("appending to path: \(set)")
-                                path.append(set)
-                            }, label: {
-                                CardView(
-                                    setName: set.setName,
-                                    rest: set.rest,
-                                    phase: set.status,
-                                )
-                            })
-                            
-                            
-                            //                        .onChange(of: path) { path in
-                            //                            print(path)
-                            //                        }
+                        VStack {
+                            VStack {
+                                Group {
+                                    Text("今日の学習リスト")
+                                        .fontWeight(.bold)
+                                    Text("今日やると長期定着に良いです")
+                                }
+                                .padding([.top], 5)
+                                ForEach(havetoDoProblemSet, id: \.id) { set in
+                                    Button(action: {
+                                        isUpdateStatus = true
+                                        print("appending to path: \(set)")
+                                        path.append(set)
+                                    }, label: {
+                                        CardView(
+                                            setName: set.setName,
+                                            rest: set.rest,
+                                            phase: set.status,
+                                        )
+                                    })
+                                    
+                                    
+                                    //                        .onChange(of: path) { path in
+                                    //                            print(path)
+                                    //                        }
+                                }
+                                .padding([.top, .bottom], 5)
+                            }
+                            .padding([.top, .bottom], 20)
                         }
-                        .padding([.top], 10)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(
+                            LinearGradient(
+                                stops: [
+                                    .init(color: .clear, location: 0.0),
+                                    .init(color: .green.opacity(0.5), location: 0.05),
+//                                    .init(color: .red.opacity(0.25), location: 0.1),
+//                                    .init(color: .red.opacity(0.5), location: 0.2),
+                                    .init(color: .green.opacity(0.5), location: 0.8),
+                                    .init(color: .green.opacity(0.25), location: 0.9),   // ここまでは同じ色
+                                    .init(color: .clear, location: 1.0)   // 最後だけ変化
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+
+                            )
+                            .ignoresSafeArea()
+                        )
+                        
                     }
                     Text("- 今後やるもの -")
                         .foregroundStyle(.gray)
-                        .fontWeight(.thin)
+                        .fontWeight(.medium)
                         .padding()
                     ForEach(dontHaveToDoProblemSet, id: \.id) { set in
                         Button(action: {

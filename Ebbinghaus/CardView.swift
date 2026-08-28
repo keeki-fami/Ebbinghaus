@@ -36,7 +36,7 @@ struct CardView: View {
                     HStack {
                         Text("next - \(restday)日 \(resthour)時間後")
                             .foregroundStyle(.black)
-                            .fontWeight(.thin)
+                            .fontWeight(.medium)
                         Spacer()
                         HStack {
                             ForEach(1..<6) { i in

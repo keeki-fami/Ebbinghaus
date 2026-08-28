@@ -17,7 +17,7 @@ struct ResultView: View {
                     .padding()
                 Text("お疲れ様でした")
                     .foregroundStyle(Color(red: 157/255, green: 157/255, blue: 157/255))
-                    .fontWeight(.thin)
+                    .fontWeight(.medium)
             }
             .navigationBarBackButtonHidden(true)
             .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -60,14 +60,14 @@ struct ProblemView: View {
                             if nowSolvePhase == .solved {
                                 VStack {
                                     Text("答え")
-                                        .fontWeight(.thin)
+                                        .fontWeight(.medium)
                                         .padding()
                                     Text("\(problemSet.problem[nowProblem].answer)")
                                         .padding()
                                 }
                                 LazyVStack {
                                     Text("キーワードチェック")
-                                        .fontWeight(.thin)
+                                        .fontWeight(.medium)
                                         .padding()
                                     ForEach(problemSet.problem[nowProblem].keyword, id: \.self) { keyword in
                                         if let check = checkList[keyword], !check {
@@ -115,6 +115,7 @@ struct ProblemView: View {
                     } , keyframes: { _ in
                         KeyframeTrack(\.opacity) {
                             MoveKeyframe(0.5)
+                            LinearKeyframe(0.5, duration: 0.25)
                             CubicKeyframe(0.0, duration: 1)
                         }
                         
@@ -144,12 +145,43 @@ struct ProblemView: View {
         }
     }
     
+    func generateTrigger(phase: Phase) -> TimeInterval {
+        switch phase {
+        case .phase1:
+            return 60*60*24
+        case .phase2:
+            return 60*60*24*2
+        case .phase3:
+            return 60*60*24*6
+        case .phase4:
+            return 60*60*24*13
+        case .phase5:
+            return 60*60*24*29
+        default:
+            return 0
+        }
+    }
+    
     func handleMainButton() {
         if nowSolvePhase == .solved {
+            // 問題終了
             if nowProblem + 1 ==  problemSet.problem.count {
                 if UserDefaults.standard.bool(forKey: "isUpdateStatus") {
                     updateProblemSetStatus()
                 }
+                
+                let notificationContent = UNMutableNotificationContent()
+                notificationContent.title = "Ebbinghaus"
+                notificationContent.body = "\(problemSet.setName) | \(problemSet.status.rawValue)回目の復習をしましょう！"
+                let time = generateTrigger(phase: problemSet.status)
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: time, repeats: false)
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: notificationContent, trigger: trigger)
+                UNUserNotificationCenter.current().add(request) {error in
+                    if let error = error {
+                        print("error is occured: \(error.localizedDescription)")
+                    }
+                }
+                
                 path.append(Result.result)
                 
             } else {
