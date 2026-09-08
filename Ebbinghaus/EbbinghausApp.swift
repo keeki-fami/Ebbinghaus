@@ -13,12 +13,23 @@ import SwiftData
 struct EbbinghausApp: App {
     
     @UIApplicationDelegateAdaptor(MyAppleDelegate.self) var appleDelegate: MyAppleDelegate
+    @State var isOnboarding = false
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if !isOnboarding {
+                
+            } else {
+                ContentView()
+            }
         }
         .modelContainer(for: [ProblemData.self, ProblemSet.self])
+    }
+}
+
+struct OnboardingView: View {
+    var body: some View {
+        
     }
 }
 

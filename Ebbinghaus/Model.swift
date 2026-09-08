@@ -15,7 +15,9 @@ class ProblemData: Identifiable, Hashable {
     var keyword: [String]
     @Attribute(.unique)
     var id: String
+    var missCount: Int
     var problemSet: ProblemSet?
+
     
     init(problem: String, answer: String, keyword: [String], problemSet: ProblemSet? = nil) {
         self.problem = problem
@@ -23,6 +25,7 @@ class ProblemData: Identifiable, Hashable {
         self.keyword = keyword
         self.problemSet = problemSet
         self.id = UUID().uuidString
+        self.missCount = 0
     }
     
     static func == (lhs: ProblemData, rhs: ProblemData) -> Bool {
