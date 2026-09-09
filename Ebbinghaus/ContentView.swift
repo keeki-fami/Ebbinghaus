@@ -23,6 +23,14 @@ extension Date {
     }
 }
 
+struct ResultViewData: Hashable {
+    var nextPhase: Phase
+    var problemSet: String
+    var next: TimeInterval
+    var correct: Int
+    var incorrect: Int
+}
+
 struct TitleView: View {
     let text: String
     var textColor:Color = .black
@@ -82,7 +90,7 @@ struct ContentView: View {
     init() {
         let date = Date().timeIntervalSince1970
         _havetoDoProblemSet = Query(filter: #Predicate<ProblemSet>{ item in
-            item.notifyDate - date <= 60*60*24.0
+            (0.0 < item.notifyDate - date) && ( item.notifyDate - date <= 60*60*24.0 )
         })
     }
     
@@ -175,23 +183,11 @@ struct ContentView: View {
             .navigationDestination(for: ProblemSet.self) { set in
                 ProblemView(problemSet: set, path: $path)
             }
-            .navigationDestination(for: Result.self) { result in
-                ResultView(path: $path)
+            .navigationDestination(for: ResultViewData.self) { resultViewData in
+                ResultView(path: $path, resultViewData: resultViewData)
             }
             .navigationDestination(for: OtherViewType.self) { content in
                 OtherView(viewType: content, path: $path)
-            }
-            .alert("注意" , isPresented: $alert) {
-                Button("キャンセル") {
-                    
-                }
-                Button("始める") {
-                    if let problem = problem {
-                        path.append(problem)
-                    }
-                }
-            } message: {
-                Text("今回はphaseが更新されません")
             }
             
         }

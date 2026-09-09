@@ -27,20 +27,6 @@ struct ProblemView: View {
     
     var body: some View {
         ZStack {
-            //            Rectangle()
-            //                .fill(isSuccess ? .green.opacity(0.5) : .red.opacity(0.5))
-            //                .ignoresSafeArea(.keyboard)
-            //                .keyframeAnimator(initialValue: backgroundAnimator(), trigger: isAnimated, content: { content, value in
-            //                    content
-            //                        .opacity(value.opacity)
-            //
-            //                } , keyframes: { _ in
-            //                    KeyframeTrack(\.opacity) {
-            //                        MoveKeyframe(0.5)
-            //                        CubicKeyframe(0.0, duration: 1)
-            //                    }
-            //
-            //                })
             VStack {
                 ProgressView(value: Double(nowProblem)/Double(problemSet.problem.count))
                     .padding()
@@ -181,8 +167,14 @@ struct ProblemView: View {
                         print("error is occured: \(error.localizedDescription)")
                     }
                 }
-                
-                path.append(Result.result)
+                var resultViewData = ResultViewData(
+                    nextPhase: problemSet.status,
+                    problemSet: problemSet.setName,
+                    next: problemSet.notifyDate,
+                    correct: 5,
+                    incorrect: 1
+                )
+                path.append(resultViewData)
                 
             } else {
                 withAnimation {

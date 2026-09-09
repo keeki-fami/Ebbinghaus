@@ -24,7 +24,6 @@ struct AnimationView: View {
                         .offset(y: offsetY)
                         .animation(.timingCurve(.circularEaseOut, duration: 1.0), value: offsetY)
                 }
-                .border(.red)
                 
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

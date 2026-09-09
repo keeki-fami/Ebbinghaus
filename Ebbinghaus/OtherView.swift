@@ -25,27 +25,37 @@ struct CardColor {
 }
 
 struct OtherView: View {
-    @Query private var dontHaveToDoProblemSet: [ProblemSet]
+    @Query private var problemSet: [ProblemSet]
     @Binding var path: NavigationPath
+    @State private var alert = false
+    @State private var problem: ProblemSet?
     var viewType: OtherViewType
     let overlayColor: Color
     let backgroundColor: Color
+    let title: String
+    let description: String
     
     init(viewType: OtherViewType, path: Binding<NavigationPath>) {
         let date = Date().timeIntervalSince1970
-        _dontHaveToDoProblemSet = Query(filter: #Predicate<ProblemSet> { item in
-            item.notifyDate - date > 60*60*24.0
-        })
         self.viewType = viewType
         self._path = path
-        
         if viewType == .willDo {
+            _problemSet = Query(filter: #Predicate<ProblemSet> { item in
+                item.notifyDate - date > 60*60*24.0
+            })
             overlayColor = Color(red: 119/255, green: 192/255, blue: 255/255)
             backgroundColor = Color(red: 218/255, green: 237/255, blue: 255/255)
+            title = "期限前の問題"
+            description = "明日以降に復習すると良い問題集です。"
             
         } else {
+            _problemSet = Query(filter: #Predicate<ProblemSet>{ item in
+                item.notifyDate - date <= 0
+            })
             overlayColor = Color(red: 172/255, green: 31/255, blue: 33/255)
             backgroundColor = Color(red: 255/255, green: 218/255, blue: 228/255)
+            title = "期限切れの問題"
+            description = "良い復習の機会を逃してしまった問題集です。まだ間に合います！"
         }
         
     }
@@ -55,9 +65,30 @@ struct OtherView: View {
                 Rectangle()
                     .fill(.clear)
                     .frame(height: 150)
-                CardView(setName: "aa", rest: 199994, phase: .phase4, viewType: viewType)
-                CardView(setName: "aa", rest: 199994, phase: .phase4, viewType: viewType)
                 
+                if problemSet.isEmpty {
+                    VStack {
+                        Text("問題集はありません。")
+                    }
+                    .frame(height: 300)
+                } else {
+                    ForEach(problemSet) { card in
+                        Button(action: {
+                            if viewType == .haveToDo {
+                                
+                            } else {
+                                
+                            }
+                        }, label: {
+                            CardView(
+                                setName: card.setName,
+                                rest: card.notifyDate,
+                                phase: card.status,
+                                viewType: viewType
+                            )
+                        })
+                    }
+                }
             }
             .background(
                 backgroundColor.ignoresSafeArea()
@@ -68,21 +99,31 @@ struct OtherView: View {
                         .fill(overlayColor)
                         .frame(height: 250)
                         .ignoresSafeArea()
-                        .border(.green)
                         .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 0)
                         .overlay(alignment: .topLeading){
                             VStack(alignment: .leading) {
-                                Text("期限前の問題")
+                                Text(title)
                                     .font(.title.bold())
-                                Text("今日以降に復習すると、記憶定着に最適な問題集です。")
+                                Text(description)
                             }
                             .padding(.leading)
                             .foregroundStyle(.white)
-                            .border(.blue)
                         }
 
                 }
                 
+            }
+            .alert("注意" , isPresented: $alert) {
+                Button("キャンセル") {
+                    
+                }
+                Button("始める") {
+                    if let problem = problem {
+                        path.append(problem)
+                    }
+                }
+            } message: {
+                Text("今回はphaseが更新されません")
             }
     }
 }
