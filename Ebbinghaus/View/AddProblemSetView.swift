@@ -29,7 +29,7 @@ struct AddProblemSetView: View {
         NavigationStack(path: $path) {
             VStack {
                 Spacer()
-                Text(nowPhase == .phase1 ? "問題セットの名前を入力してください" : nowPhase == .phase2 ? "問題を追加してください。" : "nil")
+                Text(nowPhase == .phase1 ? "問題集の名前を入力してください" : nowPhase == .phase2 ? "問題を追加してください。" : "nil")
                     .fontWeight(.medium)
                 
                 if nowPhase == .phase2 {

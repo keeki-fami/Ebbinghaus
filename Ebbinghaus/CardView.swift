@@ -110,6 +110,7 @@ struct CardStackingView: View {
 struct WillSolveCardView: View {
     var body: some View {
         RoundedRectangle(cornerRadius: 10)
+            .fill(Color(red: 52/255, green: 119/255, blue: 244/255))
             .frame(width: 275, height: 200)
             .overlay() {
                 VStack{
@@ -117,7 +118,7 @@ struct WillSolveCardView: View {
                         .padding()
                     Text("通知前の問題")
                         .font(.title3)
-                    Text("明日以降、復習すると良い問題です。")
+                    Text("今日以降、復習すると良い問題です。")
 //                        .fontWeight(.thin)
                         .font(.caption)
                 }
@@ -130,6 +131,7 @@ struct WillSolveCardView: View {
 struct HaveToSolveCardView: View {
     var body: some View {
         RoundedRectangle(cornerRadius: 10)
+            .fill(.black)
             .frame(width: 275, height: 200)
             .overlay() {
                 VStack{

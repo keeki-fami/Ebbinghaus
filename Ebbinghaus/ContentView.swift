@@ -50,32 +50,47 @@ struct ContentView: View {
     var body: some View {
         NavigationStack(path: $path) {
             ScrollView {
+                Rectangle()
+                    .fill(.clear)
+                    .frame(height: 100)
                 Group {
                     if havetoDoProblemSet.isEmpty {
                         VStack {
-                            Spacer()
+                            Rectangle()
+                                .fill(.clear)
+                                .frame(height: 50)
                             Text("🎉")
+                                .font(.largeTitle)
+                                .padding()
                             Spacer()
-                            Text("Good job!")
-                                .foregroundStyle(.blue)
-                                .font(.title)
-                                .fontWeight(.bold)
-                            Text("やるべきことは全て終了しました！")
-                                .fontWeight(.medium)
-                                .font(.body)
-                                .foregroundStyle(.gray)
-                            Spacer()
+                            Group {
+                                    Text("今日の問題は")
+                                    Text("全て完了しました！")
+                            }
+                            .foregroundStyle(.black)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            Rectangle()
+                                .fill(.clear)
+                                .frame(height: 25)
+                            Group {
+                                Text("素晴らしい！")
+                                Text("EbbingHausの忘却曲線に沿って、")
+                                Text("あなたの学習は着実に成果になっています。")
+                            }
+                            .fontWeight(.thin)
+                            .font(.body)
+                            .foregroundStyle(.black)
                         }
-                        .frame(maxWidth: .infinity, maxHeight: 200)
                     } else {
                         VStack {
                             VStack {
-                                Group {
+                                HStack {
                                     Text("今日の学習リスト")
-                                        .fontWeight(.bold)
-                                    Text("今日やると長期定着に良いです")
+                                        .font(Font.title.bold())
+                                        .padding()
+                                    Spacer()
                                 }
-                                .padding([.top], 5)
                                 ForEach(havetoDoProblemSet, id: \.id) { set in
                                     Button(action: {
                                         isUpdateStatus = true
@@ -88,65 +103,62 @@ struct ContentView: View {
                                             phase: set.status,
                                         )
                                     })
-                                    
-                                    
-                                    //                        .onChange(of: path) { path in
-                                    //                            print(path)
-                                    //                        }
                                 }
                                 .padding([.top, .bottom], 5)
                             }
                             .padding([.top, .bottom], 20)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(
-                            LinearGradient(
-                                stops: [
-                                    .init(color: .clear, location: 0.0),
-                                    .init(color: .green.opacity(0.5), location: 0.05),
-//                                    .init(color: .red.opacity(0.25), location: 0.1),
-//                                    .init(color: .red.opacity(0.5), location: 0.2),
-                                    .init(color: .green.opacity(0.5), location: 0.8),
-                                    .init(color: .green.opacity(0.25), location: 0.9),   // ここまでは同じ色
-                                    .init(color: .clear, location: 1.0)   // 最後だけ変化
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-
-                            )
-                            .ignoresSafeArea()
-                        )
                         
                     }
-                    Text("- 今後やるもの -")
-                        .foregroundStyle(.gray)
-                        .fontWeight(.medium)
-                        .padding()
-                    ForEach(dontHaveToDoProblemSet, id: \.id) { set in
-                        Button(action: {
-                            isUpdateStatus = false
-                            print("appending to path: \(set)")
-                            problem = set
-                            alert = true
-                        }, label: {
-                            CardView(
-                                setName: set.setName,
-                                rest: set.rest,
-                                phase: set.status,
-                            )
-                        })
-                        .onAppear() {
-                            print("rest - \(set.setName): \(set.rest)")
-                        }
-                        
-                        //                        .onChange(of: path) { path in
-                        //                            print(path)
-                        //                        }
+                    
+                    HStack {
+                        Text("その他")
+                            .font(Font.title.bold())
+                            .padding()
+                        Spacer()
                     }
-                    .padding([.top], 10)
+                    Button(action: {
+                        
+                    }, label: {
+                        WillSolveCardView()
+                    })
+                    Button(action: {
+                        
+                    }, label: {
+                        HaveToSolveCardView()
+                    })
                     
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                Rectangle()
+                    .fill(.clear)
+                    .frame(width: 400, height: 200)
+                    .overlay() {
+                        VStack {
+                            RoundedRectangle(cornerRadius: 5)
+                                .frame(width: 50, height: 50)
+                            Text("v1.0.1")
+                                .foregroundStyle(.gray)
+                        }
+                    }
+            }
+            .ignoresSafeArea()
+            .background(
+                Color.blue.opacity(0.1)
+                .ignoresSafeArea()
+            )
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(.blue)
+                    .frame(width: 500, height: 100)
+                    .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 4)
+                    .overlay(alignment: .bottom) {
+                        Text("EbbingHaus")
+                            .foregroundStyle(.white)
+                            .padding()
+                    }
+                    .ignoresSafeArea()
             }
             .overlay(alignment: .bottomTrailing) {
                 Button(action: {
@@ -155,6 +167,7 @@ struct ContentView: View {
                     Circle()
                         .fill(.blue)
                         .frame(width: 75, height: 75)
+                        .shadow(color: .blue.opacity(0.25), radius: 10, x: 0, y: 0)
                         .overlay() {
                             Image(systemName: "plus")
                                 .resizable()
@@ -170,7 +183,7 @@ struct ContentView: View {
             .navigationDestination(for: Result.self) { result in
                 ResultView(path: $path)
             }
-            .navigationTitle("Home")
+//            .navigationTitle("Home")
             .alert("注意" , isPresented: $alert) {
                 Button("キャンセル") {
                     
@@ -218,6 +231,19 @@ let previewContainer: ModelContainer = {
                 notifyDate: Date().timeIntervalSince1970,
                 status: .phase1
             )
+        )
+        return container
+    } catch {
+        fatalError("failed to create container")
+    }
+}()
+
+@MainActor
+let previewContainerEmpty: ModelContainer = {
+    do {
+        let container = try ModelContainer(
+            for: ProblemSet.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true),
         )
         return container
     } catch {
