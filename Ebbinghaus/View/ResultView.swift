@@ -101,7 +101,7 @@ struct ResultView: View {
                 
                 Button("ホーム面に戻る") {
                     let num = path.count
-                    path.removeLast(num-1)
+                    path.removeLast(num)
                 }
                 .foregroundStyle(.white)
                 .padding()

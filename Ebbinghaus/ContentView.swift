@@ -165,6 +165,7 @@ struct ContentView: View {
             }
             .overlay(alignment: .bottomTrailing) {
                     Button(action: {
+                        path.append("add")
                         isSheet = true
                     }, label: {
                         Circle()
@@ -189,11 +190,10 @@ struct ContentView: View {
             .navigationDestination(for: OtherViewType.self) { content in
                 OtherView(viewType: content, path: $path)
             }
+            .navigationDestination(for: String.self) { _ in
+                AddProblemSetView(path: $path)
+            }
             
-        }
-        .sheet(isPresented: $isSheet) {
-            AddProblemSetView()
-                .interactiveDismissDisabled()
         }
     }
 }
