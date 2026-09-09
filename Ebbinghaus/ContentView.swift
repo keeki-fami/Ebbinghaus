@@ -23,9 +23,53 @@ extension Date {
     }
 }
 
+struct TitleView: View {
+    let text: String
+    var textColor:Color = .black
+    var body: some View {
+        HStack {
+            Text(text)
+                .font(Font.title.bold())
+                .padding()
+            Spacer()
+        }
+    }
+}
+
+struct NothingToDoTodayView: View {
+    var body: some View {
+        VStack {
+            Rectangle()
+                .fill(.clear)
+                .frame(height: 50)
+            Text("🎉")
+                .font(.largeTitle)
+                .padding()
+            Spacer()
+            Group {
+                    Text("今日の問題は")
+                    Text("全て完了しました！")
+            }
+            .foregroundStyle(.black)
+            .font(.title2)
+            .fontWeight(.bold)
+            Rectangle()
+                .fill(.clear)
+                .frame(height: 25)
+            Group {
+                Text("素晴らしい！")
+                Text("EbbingHausの忘却曲線に沿って、")
+                Text("あなたの学習は着実に成果になっています。")
+            }
+            .fontWeight(.thin)
+            .font(.body)
+            .foregroundStyle(.black)
+        }
+    }
+}
+
 struct ContentView: View {
-    @Environment(\.modelContext) private var context
-    //    @Query private var problemSet: [ProblemSet]
+//    @Environment(\.modelContext) private var context
     @State private var isSheet = false
     @State private var isNavigation = false
     @State private var presented: [ProblemSet] = []
@@ -33,17 +77,12 @@ struct ContentView: View {
     @State private var alert = false
     @State private var problem: ProblemSet?
     @Query private var havetoDoProblemSet: [ProblemSet]
-    @Query private var dontHaveToDoProblemSet: [ProblemSet]
     @AppStorage("isUpdateStatus") var isUpdateStatus: Bool = true
-    
     
     init() {
         let date = Date().timeIntervalSince1970
         _havetoDoProblemSet = Query(filter: #Predicate<ProblemSet>{ item in
             item.notifyDate - date <= 60*60*24.0
-        })
-        _dontHaveToDoProblemSet = Query(filter: #Predicate<ProblemSet> { item in
-            item.notifyDate - date > 60*60*24.0
         })
     }
     
@@ -55,42 +94,11 @@ struct ContentView: View {
                     .frame(height: 100)
                 Group {
                     if havetoDoProblemSet.isEmpty {
-                        VStack {
-                            Rectangle()
-                                .fill(.clear)
-                                .frame(height: 50)
-                            Text("🎉")
-                                .font(.largeTitle)
-                                .padding()
-                            Spacer()
-                            Group {
-                                    Text("今日の問題は")
-                                    Text("全て完了しました！")
-                            }
-                            .foregroundStyle(.black)
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            Rectangle()
-                                .fill(.clear)
-                                .frame(height: 25)
-                            Group {
-                                Text("素晴らしい！")
-                                Text("EbbingHausの忘却曲線に沿って、")
-                                Text("あなたの学習は着実に成果になっています。")
-                            }
-                            .fontWeight(.thin)
-                            .font(.body)
-                            .foregroundStyle(.black)
-                        }
+                        NothingToDoTodayView()
                     } else {
                         VStack {
+                            TitleView(text: "今日の問題集")
                             VStack {
-                                HStack {
-                                    Text("今日の学習リスト")
-                                        .font(Font.title.bold())
-                                        .padding()
-                                    Spacer()
-                                }
                                 ForEach(havetoDoProblemSet, id: \.id) { set in
                                     Button(action: {
                                         isUpdateStatus = true
@@ -112,38 +120,24 @@ struct ContentView: View {
                         
                     }
                     
-                    HStack {
-                        Text("その他")
-                            .font(Font.title.bold())
-                            .padding()
-                        Spacer()
-                    }
+                    TitleView(text: "その他")
                     Button(action: {
-                        
+                        let content = OtherViewType.willDo
+                        path.append(content)
                     }, label: {
                         WillSolveCardView()
                     })
                     Button(action: {
-                        
+                        let content = OtherViewType.haveToDo
+                        path.append(content)
                     }, label: {
                         HaveToSolveCardView()
                     })
                     
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                Rectangle()
-                    .fill(.clear)
-                    .frame(width: 400, height: 200)
-                    .overlay() {
-                        VStack {
-                            RoundedRectangle(cornerRadius: 5)
-                                .frame(width: 50, height: 50)
-                            Text("v1.0.1")
-                                .foregroundStyle(.gray)
-                        }
-                    }
             }
-            .ignoresSafeArea()
+//            .ignoresSafeArea()
             .background(
                 Color.blue.opacity(0.1)
                 .ignoresSafeArea()
@@ -183,7 +177,9 @@ struct ContentView: View {
             .navigationDestination(for: Result.self) { result in
                 ResultView(path: $path)
             }
-//            .navigationTitle("Home")
+            .navigationDestination(for: OtherViewType.self) { content in
+                OtherView(viewType: content, path: $path)
+            }
             .alert("注意" , isPresented: $alert) {
                 Button("キャンセル") {
                     
