@@ -11,6 +11,10 @@ struct CardView: View {
     let setName: String
     let rest: TimeInterval
     let phase: Phase
+    let viewType: OtherViewType
+    var cardColor: CardColor {
+        return getCardColorSet(viewType: viewType)
+    }
     
     var restday: Int {
         return Int(rest/(60*60*24))
@@ -25,8 +29,8 @@ struct CardView: View {
             .fill(
                 LinearGradient(
                     stops: [
-                        .init(color: Color(red: 58/255, green: 118/255, blue: 214/255), location: 0.0),
-                        .init(color: Color(red: 30/255, green: 62/255, blue: 112/255), location: 1.0)
+                        .init(color: cardColor.light, location: 0.0),
+                        .init(color: cardColor.dark, location: 1.0)
                     ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
@@ -69,6 +73,20 @@ struct CardView: View {
                 }
                 .padding(20)
             }
+    }
+    
+    func getCardColorSet(viewType: OtherViewType) -> CardColor {
+        if viewType == .willDo {
+            return CardColor(
+                light: Color(red: 58/255, green: 118/255, blue: 214/255),
+                dark: Color(red: 38/255, green: 62/255, blue: 112/255)
+            )
+        } else {
+            return CardColor(
+                light: Color(red: 214/255, green: 58/255, blue: 84/255),
+                dark: Color(red: 112/255, green: 30/255, blue: 44/255)
+            )
+        }
     }
 }
 
@@ -131,7 +149,7 @@ struct WillSolveCardView: View {
 struct HaveToSolveCardView: View {
     var body: some View {
         RoundedRectangle(cornerRadius: 10)
-            .fill(.black)
+            .fill(Color(red: 214/255, green: 58/255, blue: 84/255))
             .frame(width: 275, height: 200)
             .overlay() {
                 VStack{
@@ -151,7 +169,9 @@ struct HaveToSolveCardView: View {
 
 #Preview {
     ScrollView {
-        CardView(setName: "aaa", rest: 2600000.0, phase: .phase3)
+        CardView(setName: "aaa", rest: 2600000.0, phase: .phase3, viewType: .willDo)
+            .padding()
+        CardView(setName: "aaa", rest: 2600000.0, phase: .phase3, viewType: .haveToDo)
             .padding()
         MiniCardView(setName: "aaa")
             .padding()

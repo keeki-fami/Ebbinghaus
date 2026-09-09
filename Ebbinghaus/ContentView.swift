@@ -109,6 +109,7 @@ struct ContentView: View {
                                             setName: set.setName,
                                             rest: set.rest,
                                             phase: set.status,
+                                            viewType: .willDo
                                         )
                                     })
                                 }
@@ -155,21 +156,21 @@ struct ContentView: View {
                     .ignoresSafeArea()
             }
             .overlay(alignment: .bottomTrailing) {
-                Button(action: {
-                    isSheet = true
-                }, label: {
-                    Circle()
-                        .fill(.blue)
-                        .frame(width: 75, height: 75)
-                        .shadow(color: .blue.opacity(0.25), radius: 10, x: 0, y: 0)
-                        .overlay() {
-                            Image(systemName: "plus")
-                                .resizable()
-                                .frame(width: 25, height: 25)
-                                .foregroundStyle(.white)
-                        }
-                })
-                .padding(30)
+                    Button(action: {
+                        isSheet = true
+                    }, label: {
+                        Circle()
+                            .fill(.blue)
+                            .frame(width: 75, height: 75)
+                            .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 0)
+                            .overlay() {
+                                Image(systemName: "plus")
+                                    .resizable()
+                                    .frame(width: 25, height: 25)
+                                    .foregroundStyle(.white)
+                            }
+                    })
+                    .padding(30)
             }
             .navigationDestination(for: ProblemSet.self) { set in
                 ProblemView(problemSet: set, path: $path)
