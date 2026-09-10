@@ -77,7 +77,7 @@ struct NothingToDoTodayView: View {
 }
 
 struct ContentView: View {
-//    @Environment(\.modelContext) private var context
+    @Environment(\.modelContext) private var context
     @State private var isSheet = false
     @State private var isNavigation = false
     @State private var presented: [ProblemSet] = []
@@ -85,13 +85,21 @@ struct ContentView: View {
     @State private var alert = false
     @State private var problem: ProblemSet?
     @Query private var havetoDoProblemSet: [ProblemSet]
+    @Query private var allProblem: [ProblemSet]
     @AppStorage("isUpdateStatus") var isUpdateStatus: Bool = true
+    @State private var refreshId = UUID()
+    @State var date = Date().timeIntervalSince1970
+    var haveToDo: [ProblemSet] {
+        return havetoDoProblemSet.filter{
+            $0.notifyDate - date > 0 &&
+            $0.notifyDate - date <= 60*60*24.0
+        }
+    }
     
     init() {
-        let date = Date().timeIntervalSince1970
-        _havetoDoProblemSet = Query(filter: #Predicate<ProblemSet>{ item in
-            (0.0 < item.notifyDate - date) && ( item.notifyDate - date <= 60*60*24.0 )
-        })
+//        _havetoDoProblemSet = Query(filter: #Predicate<ProblemSet> { item in
+//            (0.0 < item.notifyDate - date) && ( item.notifyDate - date <= 60*60*24.0 )
+//        })
     }
     
     var body: some View {
@@ -101,13 +109,13 @@ struct ContentView: View {
                     .fill(.clear)
                     .frame(height: 100)
                 Group {
-                    if havetoDoProblemSet.isEmpty {
+                    if haveToDo.isEmpty {
                         NothingToDoTodayView()
                     } else {
                         VStack {
                             TitleView(text: "今日の問題集")
                             VStack {
-                                ForEach(havetoDoProblemSet, id: \.id) { set in
+                                ForEach(haveToDo, id: \.id) { set in
                                     Button(action: {
                                         isUpdateStatus = true
                                         print("appending to path: \(set)")
@@ -120,6 +128,17 @@ struct ContentView: View {
                                             viewType: .willDo
                                         )
                                     })
+                                    .contextMenu {
+                                        Button("削除", role: .destructive) {
+                                            if let idx = havetoDoProblemSet.firstIndex(of: set) {
+                                                var element = havetoDoProblemSet[idx]
+                                                withAnimation {
+                                                    context.delete(element)
+                                                    try? context.save()
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                                 .padding([.top, .bottom], 5)
                             }
@@ -145,6 +164,11 @@ struct ContentView: View {
                     
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .onAppear() {
+                    date = Date().timeIntervalSince1970
+                    print("date更新")
+                    allProblem.forEach{print("\($0.setName) - \($0.notifyDate - date)")}
+                }
             }
 //            .ignoresSafeArea()
             .background(
@@ -165,7 +189,8 @@ struct ContentView: View {
             }
             .overlay(alignment: .bottomTrailing) {
                     Button(action: {
-                        path.append("add")
+                        let date = Date()
+                        path.append(date)
                         isSheet = true
                     }, label: {
                         Circle()
@@ -190,10 +215,9 @@ struct ContentView: View {
             .navigationDestination(for: OtherViewType.self) { content in
                 OtherView(viewType: content, path: $path)
             }
-            .navigationDestination(for: String.self) { _ in
-                AddProblemSetView(path: $path)
+            .navigationDestination(for: Date.self) { date in
+                AddProblemSetView(path: $path, pushedDate: date)
             }
-            
         }
     }
 }

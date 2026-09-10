@@ -26,6 +26,7 @@ struct AddProblemSetView: View {
     @State var problemCreatingViewModel = ProblemCreatingViewModel()
     @Binding var path: NavigationPath
     @State private var selectedAddMethod: AddMethod = .manual
+    let pushedDate: Date
     
     enum Screen: Hashable {
         case complete
@@ -33,6 +34,19 @@ struct AddProblemSetView: View {
     
     var body: some View {
         VStack {
+            Rectangle()
+                .fill(.clear)
+                .frame(height: 50)
+                .overlay {
+                    switch nowPhase {
+                        case .phase1 :
+                        Text("ステップ 1/2")
+                    case .phase2 :
+                        Text("ステップ 2/2")
+                    default :
+                        Text("")
+                    }
+                }
             Spacer()
             Text(nowPhase == .phase2 ? "問題集の名前を入力してください" : nowPhase == .phase1 ? "問題を追加してください。" : "nil")
                 .fontWeight(.medium)
@@ -55,19 +69,9 @@ struct AddProblemSetView: View {
                                 answer: problem.answer
                             )
                         }
-                        Menu {
-                            Button {
-                                selectedAddMethod = .manual
-                            } label: {
-                                Text("手動で入力する")
-                            }
-                            
-                            Button {
-                                selectedAddMethod = .capture
-                            } label: {
-                                Text("写真で撮影する")
-                            }
-                        } label: {
+                        NavigationLink(destination: {
+                            ProblemCreatingView(problemCreatingViewModel: $problemCreatingViewModel)
+                        }, label: {
                             Circle()
                                 .fill(.white)
                                 .frame(width: 60, height: 60)
@@ -82,7 +86,7 @@ struct AddProblemSetView: View {
                                         .font(.system(size: 28, weight: .medium))
                                 }
                                 .padding()
-                        }
+                        })
                     }
                     .frame(
                         maxWidth: .infinity,
@@ -97,9 +101,8 @@ struct AddProblemSetView: View {
                 if nowPhase == .phase1 {
                     nowPhase = .phase2
                 } else if nowPhase == .phase2 {
-                    //                      nowPhase = .phase3
-                    let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
-                    let problemset = ProblemSet(setName: setName, problem: problemCreatingViewModel.problems, notifyDate: tomorrow.timeIntervalSince1970, status: .phase1)
+                    let problemset = ProblemSet(setName: setName, problem: problemCreatingViewModel.problems, notifyDate: pushedDate.timeIntervalSince1970 + 60*60*24-10, status: .phase1)
+                    print("my: \(pushedDate.timeIntervalSince1970 + 60*60*24-10 - Date().timeIntervalSince1970)")
                     
                     modelContext.insert(problemset)
                     problemset.problem.forEach {
@@ -138,7 +141,8 @@ struct AddProblemSetView: View {
                     .padding(5)
                 Spacer()
                 Button("ホームに戻る") {
-                    dismiss()
+                    let len = path.count
+                    path.removeLast(len)
                 }
                 .padding(30)
             }
@@ -190,5 +194,5 @@ struct AddProblemSetView: View {
 
 #Preview {
     @Previewable @State var path = NavigationPath()
-    AddProblemSetView(path: $path)
+    AddProblemSetView(path: $path, pushedDate: Date())
 }

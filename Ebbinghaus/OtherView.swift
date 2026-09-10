@@ -75,9 +75,9 @@ struct OtherView: View {
                     ForEach(problemSet) { card in
                         Button(action: {
                             if viewType == .haveToDo {
-                                
+                                path.append(card)
                             } else {
-                                
+                                alert = true
                             }
                         }, label: {
                             CardView(

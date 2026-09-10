@@ -28,6 +28,11 @@ struct ProblemCreatingView: View {
     @Environment(\.modelContext) private var context
     @Binding var problemCreatingViewModel: ProblemCreatingViewModel
     
+//    struct Keywords: Identifiable {
+//        var id = UUID().uuidString
+//        var keyword: String
+//    }
+    
     enum Field: Hashable {
         case problem
         case answer
@@ -35,7 +40,7 @@ struct ProblemCreatingView: View {
     }
     
     var body: some View {
-        NavigationStack {
+//        NavigationStack {
             ScrollView {
                 Text("問題の作成をしてください。")
                     .fontWeight(.medium)
@@ -71,21 +76,21 @@ struct ProblemCreatingView: View {
                 .padding()
                 VStack {
                     HStack {
-                        Text("キーワード")
-                            .font(.largeTitle)
-                            .fontWeight(.medium)
+                        VStack {
+                            Text("キーワード")
+                                .font(.largeTitle)
+                                .fontWeight(.medium)
+                            Text("解答に含める単語を入力してください。")
+                        }
                         Spacer()
                     }
-                        ForEach(keyword.indices, id: \.self) { idx in
+                    ForEach(keyword.indices, id: \.self) { idx in
                             HStack {
                                 TextField("キーワード\(idx+1)", text: $keyword[idx], axis: .vertical)
                                     .textFieldStyle(.plain)
                                     .focused($focus, equals: .keyword)
                                 Spacer()
                             }
-                        }
-                        .onDelete { indexSet in
-                            keyword.remove(atOffsets: indexSet)
                         }
                     Button (action: {
                         keyword.append("")
@@ -133,6 +138,6 @@ struct ProblemCreatingView: View {
                         }
                 })
             
-        }
+//        }
     }
 }

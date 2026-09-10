@@ -115,16 +115,16 @@ struct ProblemView: View {
         switch nowPhase {
         case .phase1:
             problemSet.status = .phase2
-            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*3
+            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24-1
         case .phase2:
             problemSet.status = .phase3
-            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*7
+            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*7-1
         case .phase3:
             problemSet.status = .phase4
-            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*14
+            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*14-1
         case .phase4:
             problemSet.status = .phase5
-            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*30
+            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*30-1
         case .phase5:
             print("aaa")
             
@@ -134,15 +134,16 @@ struct ProblemView: View {
     func generateTrigger(phase: Phase) -> TimeInterval {
         switch phase {
         case .phase1:
-            return 60*60*24
+            return 60*60*24-1
         case .phase2:
-            return 60*60*24*2
+//            return 60*60*24*2-1
+            return 15
         case .phase3:
-            return 60*60*24*6
+            return 60*60*24*6-1
         case .phase4:
-            return 60*60*24*13
+            return 60*60*24*13-1
         case .phase5:
-            return 60*60*24*29
+            return 60*60*24*29-1
         default:
             return 0
         }
@@ -158,8 +159,10 @@ struct ProblemView: View {
                 
                 let notificationContent = UNMutableNotificationContent()
                 notificationContent.title = "Ebbinghaus"
+                print("\(problemSet.setName) | \(problemSet.status.rawValue)回目の復習をしましょう！")
                 notificationContent.body = "\(problemSet.setName) | \(problemSet.status.rawValue)回目の復習をしましょう！"
                 let time = generateTrigger(phase: problemSet.status)
+                print("\(time)秒後")
                 let trigger = UNTimeIntervalNotificationTrigger(timeInterval: time, repeats: false)
                 let request = UNNotificationRequest(identifier: UUID().uuidString, content: notificationContent, trigger: trigger)
                 UNUserNotificationCenter.current().add(request) {error in
