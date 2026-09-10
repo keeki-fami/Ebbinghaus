@@ -2,7 +2,7 @@
 //  AddProblemSetView.swift
 //  Ebbinghaus
 //
-//  Created by 櫻田聖和 on 2026/07/20.
+//  Created by keeki-fami on 2026/07/20.
 //
 import SwiftUI
 import SwiftData
@@ -127,6 +127,7 @@ struct AddProblemSetView: View {
                     }
             })
         }
+        .navigationBarBackButtonHidden(true)
         .navigationDestination(for: Screen.self, destination: {_ in
             VStack {
                 Spacer()

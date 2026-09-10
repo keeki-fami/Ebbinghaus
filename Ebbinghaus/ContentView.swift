@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  Ebbinghaus
 //
-//  Created by 櫻田聖和 on 2026/07/08.
+//  Created by keeki-fami on 2026/07/08.
 //
 
 import SwiftUI
@@ -45,33 +45,43 @@ struct TitleView: View {
 }
 
 struct NothingToDoTodayView: View {
+    let count: Int
     var body: some View {
-        VStack {
-            Rectangle()
-                .fill(.clear)
-                .frame(height: 50)
-            Text("🎉")
-                .font(.largeTitle)
-                .padding()
-            Spacer()
-            Group {
+        if count == 0 {
+            TitleView(text: "今日の問題集")
+            Text("1. 画面右下の「+」ボタンから、問題を追加しよう！")
+                .foregroundStyle(.gray)
+            Text("2. 「今日の問題集」に表示される問題を解こう！")
+                .foregroundStyle(.gray)
+        } else {
+            VStack {
+                TitleView(text: "今日の問題集")
+                Rectangle()
+                    .fill(.clear)
+                    .frame(height: 50)
+                Text("🎉")
+                    .font(.largeTitle)
+                    .padding()
+                Spacer()
+                Group {
                     Text("今日の問題は")
                     Text("全て完了しました！")
+                }
+                .foregroundStyle(.black)
+                .font(.title2)
+                .fontWeight(.bold)
+                Rectangle()
+                    .fill(.clear)
+                    .frame(height: 25)
+                Group {
+                    Text("素晴らしい！")
+                    Text("EbbingHausの忘却曲線に沿って、")
+                    Text("あなたの学習は着実に成果になっています。")
+                }
+                .fontWeight(.thin)
+                .font(.body)
+                .foregroundStyle(.black)
             }
-            .foregroundStyle(.black)
-            .font(.title2)
-            .fontWeight(.bold)
-            Rectangle()
-                .fill(.clear)
-                .frame(height: 25)
-            Group {
-                Text("素晴らしい！")
-                Text("EbbingHausの忘却曲線に沿って、")
-                Text("あなたの学習は着実に成果になっています。")
-            }
-            .fontWeight(.thin)
-            .font(.body)
-            .foregroundStyle(.black)
         }
     }
 }
@@ -110,7 +120,7 @@ struct ContentView: View {
                     .frame(height: 100)
                 Group {
                     if haveToDo.isEmpty {
-                        NothingToDoTodayView()
+                        NothingToDoTodayView(count: havetoDoProblemSet.count)
                     } else {
                         VStack {
                             TitleView(text: "今日の問題集")
@@ -123,7 +133,7 @@ struct ContentView: View {
                                     }, label: {
                                         CardView(
                                             setName: set.setName,
-                                            rest: set.rest,
+                                            rest: set.notifyDate,
                                             phase: set.status,
                                             viewType: .willDo
                                         )

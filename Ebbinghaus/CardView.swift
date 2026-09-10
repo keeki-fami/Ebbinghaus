@@ -2,7 +2,7 @@
 //  CardView.swift
 //  Ebbinghaus
 //
-//  Created by 櫻田聖和 on 2026/07/10.
+//  Created by keeki-fami on 2026/07/10.
 //
 
 import SwiftUI
@@ -12,15 +12,16 @@ struct CardView: View {
     let rest: TimeInterval
     let phase: Phase
     let viewType: OtherViewType
+    let date = Date()
     var cardColor: CardColor {
         return getCardColorSet(viewType: viewType)
     }
     
     var restday: Int {
-        return Int(rest/(60*60*24))
+        return Int((rest - date.timeIntervalSince1970)/(60*60*24))
     }
     var resthour: Int {
-        let resth = Int(rest)%(60*60*24)
+        let resth = Int(rest - date.timeIntervalSince1970)%(60*60*24)
         return Int(resth/(60*60))
     }
     

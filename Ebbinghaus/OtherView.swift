@@ -25,6 +25,7 @@ struct CardColor {
 }
 
 struct OtherView: View {
+    @Environment(\.modelContext) private var context
     @Query private var problemSet: [ProblemSet]
     @Binding var path: NavigationPath
     @State private var alert = false
@@ -87,6 +88,17 @@ struct OtherView: View {
                                 viewType: viewType
                             )
                         })
+                        .contextMenu {
+                            Button("削除", role: .destructive) {
+                                if let idx = problemSet.firstIndex(of: card) {
+                                    var element = problemSet[idx]
+                                    withAnimation {
+                                        context.delete(element)
+                                        try? context.save()
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

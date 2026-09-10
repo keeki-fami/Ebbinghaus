@@ -2,7 +2,7 @@
 //  ProblemView.swift
 //  Ebbinghaus
 //
-//  Created by 櫻田聖和 on 2026/07/20.
+//  Created by keeki-fami on 2026/07/20.
 //
 import SwiftUI
 
@@ -14,6 +14,7 @@ struct ProblemView: View {
     @FocusState private var focus: Focus?
     @State private var nowSolvePhase: SolvePhase = .solving
     @State private var nowProblem: Int = 0
+    @State private var progressVar: Int = 0
     @State private var inputText: String = ""
     @Binding var path: NavigationPath
     @State private var isSuccess: Bool = false
@@ -28,7 +29,7 @@ struct ProblemView: View {
     var body: some View {
         ZStack {
             VStack {
-                ProgressView(value: Double(nowProblem)/Double(problemSet.problem.count))
+                ProgressView(value: Double(progressVar)/Double(problemSet.problem.count))
                     .padding()
                 Spacer()
                 Group {
@@ -193,10 +194,12 @@ struct ProblemView: View {
                 // 正誤判定
                 if checkKeyword() {
                     isSuccess = true
+                    problemSet.problem[nowProblem].missCount += 1
                 } else {
                     isSuccess = false
                 }
                 withAnimation {
+                    progressVar += 1
                     nowSolvePhase = .solved
                 }
                 isAnimated.toggle()

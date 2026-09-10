@@ -2,9 +2,10 @@
 //  ProblemCreatingView.swift
 //  Ebbinghaus
 //
-//  Created by 櫻田聖和 on 2026/07/20.
+//  Created by keeki-fami on 2026/07/20.
 //
 import SwiftUI
+import SwiftData
 
 @Observable
 class ProblemCreatingViewModel {
