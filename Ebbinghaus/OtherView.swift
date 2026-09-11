@@ -62,81 +62,81 @@ struct OtherView: View {
     }
     
     var body: some View {
-            ScrollView {
-                Rectangle()
-                    .fill(.clear)
-                    .frame(height: 150)
-                
-                if problemSet.isEmpty {
-                    VStack {
-                        Text("問題集はありません。")
-                    }
-                    .frame(height: 300)
-                } else {
-                    ForEach(problemSet) { card in
-                        Button(action: {
-                            if viewType == .haveToDo {
-                                path.append(card)
-                            } else {
-                                alert = true
-                            }
-                        }, label: {
-                            CardView(
-                                setName: card.setName,
-                                rest: card.notifyDate,
-                                phase: card.status,
-                                viewType: viewType
-                            )
-                        })
-                        .contextMenu {
-                            Button("削除", role: .destructive) {
-                                if let idx = problemSet.firstIndex(of: card) {
-                                    var element = problemSet[idx]
-                                    withAnimation {
-                                        context.delete(element)
-                                        try? context.save()
-                                    }
+        ScrollView {
+            Rectangle()
+                .fill(.clear)
+                .frame(height: 150)
+            
+            if problemSet.isEmpty {
+                VStack {
+                    Text("問題集はありません。")
+                }
+                .frame(height: 300)
+            } else {
+                ForEach(problemSet) { card in
+                    Button(action: {
+                        if viewType == .haveToDo {
+                            path.append(card)
+                        } else {
+                            alert = true
+                        }
+                    }, label: {
+                        CardView(
+                            setName: card.setName,
+                            rest: card.notifyDate,
+                            phase: card.status,
+                            viewType: viewType
+                        )
+                    })
+                    .contextMenu {
+                        Button("削除", role: .destructive) {
+                            if let idx = problemSet.firstIndex(of: card) {
+                                var element = problemSet[idx]
+                                withAnimation {
+                                    context.delete(element)
+                                    try? context.save()
                                 }
                             }
                         }
                     }
                 }
             }
-            .background(
-                backgroundColor.ignoresSafeArea()
-            )
-            .overlay(alignment: .top) {
-                ZStack {
-                    Triangle()
-                        .fill(overlayColor)
-                        .frame(height: 250)
-                        .ignoresSafeArea()
-                        .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 0)
-                        .overlay(alignment: .topLeading){
-                            VStack(alignment: .leading) {
-                                Text(title)
-                                    .font(.title.bold())
-                                Text(description)
-                            }
-                            .padding(.leading)
-                            .foregroundStyle(.white)
+        }
+        .background(
+            backgroundColor.ignoresSafeArea()
+        )
+        .overlay(alignment: .top) {
+            ZStack {
+                Triangle()
+                    .fill(overlayColor)
+                    .frame(height: 250)
+                    .ignoresSafeArea()
+                    .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 0)
+                    .overlay(alignment: .topLeading){
+                        VStack(alignment: .leading) {
+                            Text(title)
+                                .font(.title.bold())
+                            Text(description)
                         }
-
-                }
+                        .padding(.leading)
+                        .foregroundStyle(.white)
+                    }
                 
             }
-            .alert("注意" , isPresented: $alert) {
-                Button("キャンセル") {
-                    
-                }
-                Button("始める") {
-                    if let problem = problem {
-                        path.append(problem)
-                    }
-                }
-            } message: {
-                Text("今回はphaseが更新されません")
+            
+        }
+        .alert("注意" , isPresented: $alert) {
+            Button("キャンセル") {
+                
             }
+            Button("始める") {
+                if let problem = problem {
+                    path.append(problem)
+                }
+            }
+        } message: {
+            Text("今回はphaseが更新されません")
+        }
     }
 }
 
