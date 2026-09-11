@@ -38,6 +38,7 @@ struct ProblemCreatingView: View {
     
     var body: some View {
 //        NavigationStack {
+        VStack {
             ScrollView {
                 Text("問題の作成をしてください。")
                     .fontWeight(.medium)
@@ -82,13 +83,13 @@ struct ProblemCreatingView: View {
                         Spacer()
                     }
                     ForEach(keyword.indices, id: \.self) { idx in
-                            HStack {
-                                TextField("キーワード\(idx+1)", text: $keyword[idx], axis: .vertical)
-                                    .textFieldStyle(.plain)
-                                    .focused($focus, equals: .keyword)
-                                Spacer()
-                            }
+                        HStack {
+                            TextField("キーワード\(idx+1)", text: $keyword[idx], axis: .vertical)
+                                .textFieldStyle(.plain)
+                                .focused($focus, equals: .keyword)
+                            Spacer()
                         }
+                    }
                     Button (action: {
                         keyword.append("")
                     }, label: {
@@ -109,32 +110,37 @@ struct ProblemCreatingView: View {
             .onTapGesture{
                 focus = nil
             }
-
-                Button(action: {
-                    if !(problem.isEmpty || answer.isEmpty) && focus == nil {
-                        let problem = ProblemData(
-                            problem: problem,
-                            answer: answer,
-                            keyword: keyword
-                        )
-                        problemCreatingViewModel.addProblem(problem: problem)
-                        dismiss()
-                    } else {
-                        focus = nil
-                    }
-                }, label: {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(!(problem.isEmpty || answer.isEmpty) && focus == nil ? .blue : .white)
-                        .shadow(color: .black.opacity(0.25), radius: 5)
-                        .frame(maxWidth: 350,  maxHeight: 50)
-                        .padding()
-                        .overlay() {
-                            Text(!(problem.isEmpty || answer.isEmpty) && focus == nil ? "追加" : "決定")
-                                .fontWeight(.medium)
-                                .foregroundStyle(!(problem.isEmpty || answer.isEmpty) && focus == nil ? .white : .black)
-                        }
-                })
             
-//        }
+            Button(action: {
+                if !(problem.isEmpty || answer.isEmpty) && focus == nil {
+                    let problem = ProblemData(
+                        problem: problem,
+                        answer: answer,
+                        keyword: keyword
+                    )
+                    problemCreatingViewModel.addProblem(problem: problem)
+                    dismiss()
+                } else {
+                    focus = nil
+                }
+            }, label: {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(!(problem.isEmpty || answer.isEmpty) && focus == nil ? .blue : .white)
+                    .shadow(color: .black.opacity(0.25), radius: 5)
+                    .frame(maxWidth: 350,  maxHeight: 50)
+                    .padding()
+                    .overlay() {
+                        Text(!(problem.isEmpty || answer.isEmpty) && focus == nil ? "追加" : "決定")
+                            .fontWeight(.medium)
+                            .foregroundStyle(!(problem.isEmpty || answer.isEmpty) && focus == nil ? .white : .black)
+                    }
+            })
+            
+            //        }
+        }
+        .background(
+            Color.blue.opacity(0.1)
+                .ignoresSafeArea()
+        )
     }
 }

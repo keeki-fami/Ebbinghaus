@@ -20,6 +20,7 @@ struct ProblemView: View {
     @State private var isSuccess: Bool = false
     @State private var isAnimated: Bool = false
     @State private var checkList: [String: Bool] = .init()
+    @State private var correctCount = 0
     
     
     struct backgroundAnimator {
@@ -93,21 +94,25 @@ struct ProblemView: View {
                 })
             }
             .background(
-                (isSuccess ? Color.green.opacity(0.5) : Color.red.opacity(0.5))
+                Color.blue.opacity(0.1)
                     .ignoresSafeArea()
-                    .keyframeAnimator(initialValue: backgroundAnimator(), trigger: isAnimated, content: { content, value in
-                        content
-                            .opacity(value.opacity)
-                        
-                    } , keyframes: { _ in
-                        KeyframeTrack(\.opacity) {
-                            MoveKeyframe(0.5)
-                            LinearKeyframe(0.5, duration: 0.25)
-                            CubicKeyframe(0.0, duration: 1)
-                        }
-                        
-                    })
             )
+//            .background(
+//                (isSuccess ? Color.green.opacity(0.5) : Color.red.opacity(0.5))
+//                    .ignoresSafeArea()
+//                    .keyframeAnimator(initialValue: backgroundAnimator(), trigger: isAnimated, content: { content, value in
+//                        content
+//                            .opacity(value.opacity)
+//                        
+//                    } , keyframes: { _ in
+//                        KeyframeTrack(\.opacity) {
+//                            MoveKeyframe(0.5)
+//                            LinearKeyframe(0.5, duration: 0.25)
+//                            CubicKeyframe(0.0, duration: 1)
+//                        }
+//                        
+//                    })
+//            )
         }
     }
     
@@ -116,7 +121,7 @@ struct ProblemView: View {
         switch nowPhase {
         case .phase1:
             problemSet.status = .phase2
-            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24-1
+            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*2-1
         case .phase2:
             problemSet.status = .phase3
             problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*7-1
@@ -171,12 +176,13 @@ struct ProblemView: View {
                         print("error is occured: \(error.localizedDescription)")
                     }
                 }
+                let problemCount = problemSet.problem.count
                 var resultViewData = ResultViewData(
                     nextPhase: problemSet.status,
                     problemSet: problemSet.setName,
                     next: problemSet.notifyDate,
-                    correct: 5,
-                    incorrect: 1
+                    correct: correctCount,
+                    incorrect: problemCount - correctCount
                 )
                 path.append(resultViewData)
                 
@@ -193,6 +199,7 @@ struct ProblemView: View {
             } else {
                 // 正誤判定
                 if checkKeyword() {
+                    correctCount += 1
                     isSuccess = true
                     problemSet.problem[nowProblem].missCount += 1
                 } else {

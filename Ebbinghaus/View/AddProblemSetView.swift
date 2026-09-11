@@ -127,6 +127,10 @@ struct AddProblemSetView: View {
                     }
             })
         }
+        .background(
+            Color.blue.opacity(0.1)
+            .ignoresSafeArea()
+        )
         .navigationDestination(for: Screen.self, destination: {_ in
             VStack {
                 Spacer()
