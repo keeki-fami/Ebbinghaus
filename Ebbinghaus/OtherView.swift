@@ -78,6 +78,7 @@ struct OtherView: View {
                         if viewType == .haveToDo {
                             path.append(card)
                         } else {
+                            problem = card
                             alert = true
                         }
                     }, label: {
@@ -91,7 +92,7 @@ struct OtherView: View {
                     .contextMenu {
                         Button("削除", role: .destructive) {
                             if let idx = problemSet.firstIndex(of: card) {
-                                var element = problemSet[idx]
+                                let element = problemSet[idx]
                                 withAnimation {
                                     context.delete(element)
                                     try? context.save()
@@ -133,6 +134,7 @@ struct OtherView: View {
                 if let problem = problem {
                     path.append(problem)
                 }
+                print("path: \(path)")
             }
         } message: {
             Text("今回はphaseが更新されません")
@@ -144,7 +146,6 @@ struct Triangle: Shape {
     func path(in rect: CGRect) -> Path {
         let point = CGPoint(x: rect.maxX, y: rect.minY)
         var path = Path()
-        
         
         path.move(to: point)
         path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY + 200))
