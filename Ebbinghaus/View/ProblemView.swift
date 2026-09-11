@@ -5,6 +5,7 @@
 //  Created by keeki-fami on 2026/07/20.
 //
 import SwiftUI
+import SwiftData
 
 struct ProblemView: View {
     enum Focus {
@@ -21,6 +22,7 @@ struct ProblemView: View {
     @State private var isAnimated: Bool = false
     @State private var checkList: [String: Bool] = .init()
     @State private var correctCount = 0
+    @Environment(\.modelContext) var context
     
     
     struct backgroundAnimator {
@@ -121,7 +123,7 @@ struct ProblemView: View {
         switch nowPhase {
         case .phase1:
             problemSet.status = .phase2
-            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*2-1
+            problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*3-1
         case .phase2:
             problemSet.status = .phase3
             problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*7-1
@@ -132,8 +134,9 @@ struct ProblemView: View {
             problemSet.status = .phase5
             problemSet.notifyDate = Date().timeIntervalSince1970 + 60*60*24*30-1
         case .phase5:
-            print("aaa")
-            
+            problemSet.status = .complete
+        default:
+            print("")
         }
     }
     
@@ -142,8 +145,8 @@ struct ProblemView: View {
         case .phase1:
             return 60*60*24-1
         case .phase2:
-//            return 60*60*24*2-1
-            return 15
+            return 60*60*24*2-1
+//            return 15
         case .phase3:
             return 60*60*24*6-1
         case .phase4:
@@ -151,6 +154,7 @@ struct ProblemView: View {
         case .phase5:
             return 60*60*24*29-1
         default:
+            // completeも
             return 0
         }
     }
@@ -159,31 +163,51 @@ struct ProblemView: View {
         if nowSolvePhase == .solved {
             // 問題終了
             if nowProblem + 1 ==  problemSet.problem.count {
+                
+                var resultViewData: ResultViewData
                 if UserDefaults.standard.bool(forKey: "isUpdateStatus") {
                     updateProblemSetStatus()
                 }
                 
-                let notificationContent = UNMutableNotificationContent()
-                notificationContent.title = "Ebbinghaus"
-                print("\(problemSet.setName) | \(problemSet.status.rawValue)回目の復習をしましょう！")
-                notificationContent.body = "\(problemSet.setName) | \(problemSet.status.rawValue)回目の復習をしましょう！"
-                let time = generateTrigger(phase: problemSet.status)
-                print("\(time)秒後")
-                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: time, repeats: false)
-                let request = UNNotificationRequest(identifier: UUID().uuidString, content: notificationContent, trigger: trigger)
-                UNUserNotificationCenter.current().add(request) {error in
-                    if let error = error {
-                        print("error is occured: \(error.localizedDescription)")
+                // completeになった場合は、削除
+                if problemSet.status == .complete {
+                    context.delete(problemSet)
+                    
+                    let problemCount = problemSet.problem.count
+                    resultViewData = ResultViewData(
+                        nextPhase: problemSet.status,
+                        problemSet: problemSet.setName,
+                        next: nil,
+                        correct: correctCount,
+                        incorrect: problemCount - correctCount
+                    )
+                } else {
+                    
+                    // 通知登録処理
+                    let notificationContent = UNMutableNotificationContent()
+                    notificationContent.title = "Ebbinghaus"
+                    print("\(problemSet.setName) | \(problemSet.status.rawValue)回目の復習をしましょう！")
+                    notificationContent.body = "\(problemSet.setName) | \(problemSet.status.rawValue)回目の復習をしましょう！"
+                    let time = generateTrigger(phase: problemSet.status)
+                    print("\(time)秒後")
+                    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: time, repeats: false)
+                    let request = UNNotificationRequest(identifier: UUID().uuidString, content: notificationContent, trigger: trigger)
+                    UNUserNotificationCenter.current().add(request) {error in
+                        if let error = error {
+                            print("error is occured: \(error.localizedDescription)")
+                        }
                     }
+                    
+                    let problemCount = problemSet.problem.count
+                    resultViewData = ResultViewData(
+                        nextPhase: problemSet.status,
+                        problemSet: problemSet.setName,
+                        next: problemSet.notifyDate,
+                        correct: correctCount,
+                        incorrect: problemCount - correctCount
+                    )
+                    
                 }
-                let problemCount = problemSet.problem.count
-                var resultViewData = ResultViewData(
-                    nextPhase: problemSet.status,
-                    problemSet: problemSet.setName,
-                    next: problemSet.notifyDate,
-                    correct: correctCount,
-                    incorrect: problemCount - correctCount
-                )
                 path.append(resultViewData)
                 
             } else {

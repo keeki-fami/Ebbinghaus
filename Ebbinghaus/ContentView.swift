@@ -26,7 +26,7 @@ extension Date {
 struct ResultViewData: Hashable {
     var nextPhase: Phase
     var problemSet: String
-    var next: TimeInterval
+    var next: TimeInterval?
     var correct: Int
     var incorrect: Int
 }

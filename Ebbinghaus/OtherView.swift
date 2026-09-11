@@ -131,6 +131,7 @@ struct OtherView: View {
                 
             }
             Button("始める") {
+                 UserDefaults.standard.set(false, forKey: "isUpdateStatus")
                 if let problem = problem {
                     path.append(problem)
                 }

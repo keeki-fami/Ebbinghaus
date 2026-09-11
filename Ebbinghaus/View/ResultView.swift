@@ -20,8 +20,11 @@ struct ResultView: View {
     let resultViewData: ResultViewData
     let window = UIApplication.shared.connectedScenes.first as? UIWindowScene
 //    window.screen.bounds.height
-    var nextDate: String {
-        let date = Date(timeIntervalSinceNow: resultViewData.next)
+    var nextDate: String? {
+        guard let next = resultViewData.next else {
+            return nil
+        }
+        let date = Date(timeIntervalSince1970: next)
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy/MM/dd"
         return formatter.string(from: date)
@@ -104,8 +107,10 @@ struct ResultView: View {
                     .foregroundStyle(.white)
                     .frame(height: geometry.size.height)
                     
-                    Text("Next - \(nextDate)")
-                        .foregroundStyle(.white)
+                    if let date = nextDate {
+                        Text("Next - \(date)")
+                            .foregroundStyle(.white)
+                    }
                     Spacer()
                     VStack {
                         HStack {

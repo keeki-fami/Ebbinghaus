@@ -46,6 +46,7 @@ enum Phase: Int, Codable {
     case phase3 = 3
     case phase4 = 4
     case phase5 = 5
+    case complete = 6
 }
 
 @Model
