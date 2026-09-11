@@ -29,10 +29,6 @@ struct ProblemCreatingView: View {
     @Environment(\.modelContext) private var context
     @Binding var problemCreatingViewModel: ProblemCreatingViewModel
     
-//    struct Keywords: Identifiable {
-//        var id = UUID().uuidString
-//        var keyword: String
-//    }
     
     enum Field: Hashable {
         case problem
@@ -77,7 +73,7 @@ struct ProblemCreatingView: View {
                 .padding()
                 VStack {
                     HStack {
-                        VStack {
+                        VStack(alignment: .leading) {
                             Text("キーワード")
                                 .font(.largeTitle)
                                 .fontWeight(.medium)

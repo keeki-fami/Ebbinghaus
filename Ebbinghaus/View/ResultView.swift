@@ -30,9 +30,6 @@ struct ResultView: View {
         GeometryReader {geometry in
             ScrollView {
                 VStack {
-    //                Rectangle()
-    //                    .fill(.clear)
-    //                    .frame(height: 10)
                     LazyVStack {
                         Text("Finish!")
                             .foregroundStyle(.white)
@@ -118,10 +115,7 @@ struct ResultView: View {
                                 Image("X_logo")
                                     .resizable()
                                     .scaledToFit()
-                                //                    .clipShape(Circle())
                                     .frame(width: 30, height: 30)
-                                //                Circle()
-                                //                    .frame(width: 30, height: 30)
                             })
                             Text("Xで継続記録をシェア")
                                 .foregroundStyle(.white)
@@ -136,7 +130,6 @@ struct ResultView: View {
                     .foregroundStyle(.white)
                     .padding()
                 }
-                
             }
             .frame(maxWidth: .infinity)
             .background() {

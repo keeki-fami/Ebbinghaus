@@ -127,7 +127,6 @@ struct AddProblemSetView: View {
                     }
             })
         }
-        .navigationBarBackButtonHidden(true)
         .navigationDestination(for: Screen.self, destination: {_ in
             VStack {
                 Spacer()
@@ -148,6 +147,8 @@ struct AddProblemSetView: View {
                 .padding(30)
             }
             .fontWeight(.medium)
+            .navigationBarBackButtonHidden(true)
+            
         })
         
         //            .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -158,37 +159,37 @@ struct AddProblemSetView: View {
         .onAppear {
             focus = .setName
         }
-        .toolbar {
-#if os(macOS)
-            ToolbarItem(
-                placement: .automatic,
-                content: {
-                    if nowPhase == .phase2 || nowPhase == .phase1 {
-                        Button("戻る") {
-                            if nowPhase == .phase2 {
-                                nowPhase = .phase1
-                            } else {
-                                dismiss()
-                            }
-                        }
-                    }
-                })
-#else
-            ToolbarItem(
-                placement: .topBarLeading,
-                content: {
-                    if nowPhase == .phase2 || nowPhase == .phase1 {
-                        Button("戻る") {
-                            if nowPhase == .phase2 {
-                                nowPhase = .phase1
-                            } else {
-                                dismiss()
-                            }
-                        }
-                    }
-                })
-#endif
-        }
+//        .toolbar {
+//#if os(macOS)
+//            ToolbarItem(
+//                placement: .automatic,
+//                content: {
+//                    if nowPhase == .phase2 || nowPhase == .phase1 {
+//                        Button("戻る") {
+//                            if nowPhase == .phase2 {
+//                                nowPhase = .phase1
+//                            } else {
+//                                dismiss()
+//                            }
+//                        }
+//                    }
+//                })
+//#else
+//            ToolbarItem(
+//                placement: .topBarLeading,
+//                content: {
+//                    if nowPhase == .phase2 || nowPhase == .phase1 {
+//                        Button("戻る") {
+//                            if nowPhase == .phase2 {
+//                                nowPhase = .phase1
+//                            } else {
+//                                dismiss()
+//                            }
+//                        }
+//                    }
+//                })
+//#endif
+//        }
         
     }
 }
