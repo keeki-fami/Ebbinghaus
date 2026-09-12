@@ -6,6 +6,7 @@
 //
 import SwiftUI
 import SwiftData
+import ConfettiSwiftUI
 
 struct AddProblemSetView: View {
     
@@ -17,7 +18,7 @@ struct AddProblemSetView: View {
         case manual
         case capture
     }
-    
+    @State private var createdAppear = false
     @State private var setName: String = ""
     @State private var nowPhase = ProblemSetPhase.phase1
     @Environment(\.dismiss) var dismiss
@@ -64,10 +65,23 @@ struct AddProblemSetView: View {
                 ScrollView {
                     VStack {
                         ForEach(problemCreatingViewModel.problems) { problem in
+//                            NavigationLink(destination: {
+//                                
+//                            }, label: {
+//                            })
                             ProblemCardView(
                                 problem: problem.problem,
                                 answer: problem.answer
                             )
+                            .contextMenu {
+                                Button("削除", role: .destructive) {
+                                    if let idx = problemCreatingViewModel.problems.firstIndex(of: problem) {
+                                        withAnimation {
+                                            problemCreatingViewModel.problems.remove(at: idx)
+                                        }
+                                    }
+                                }
+                            }
                         }
                         NavigationLink(destination: {
                             ProblemCreatingView(problemCreatingViewModel: $problemCreatingViewModel)
@@ -101,29 +115,34 @@ struct AddProblemSetView: View {
                 if nowPhase == .phase1 {
                     nowPhase = .phase2
                 } else if nowPhase == .phase2 {
-                    let problemset = ProblemSet(setName: setName, problem: problemCreatingViewModel.problems, notifyDate: pushedDate.timeIntervalSince1970 + 60*60*24-10, status: .phase1)
-                    print("my: \(pushedDate.timeIntervalSince1970 + 60*60*24-10 - Date().timeIntervalSince1970)")
-                    
-                    modelContext.insert(problemset)
-                    problemset.problem.forEach {
-                        $0.problemSet = problemset
+                    if focus != nil {
+                        withAnimation {
+                            focus = nil
+                        }
+                    } else {
+                        let problemset = ProblemSet(setName: setName, problem: problemCreatingViewModel.problems, notifyDate: pushedDate.timeIntervalSince1970 + 60*60*24-10, status: .phase1)
+                        
+                        modelContext.insert(problemset)
+                        problemset.problem.forEach {
+                            $0.problemSet = problemset
+                        }
+                        
+                        path.append(Screen.complete)
                     }
-                    
-                    path.append(Screen.complete)
                 } else {
                     dismiss()
                 }
                 
             }, label: {
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(.white)
+                    .fill((focus == nil) && !setName.isEmpty && nowPhase == .phase2  ? .blue : .white)
                     .shadow(color: .black.opacity(0.25), radius: 5)
                     .frame(maxWidth: 350,  maxHeight: 50)
                     .padding()
                     .overlay() {
-                        Text(focus == nil ? "Next" : "決定")
+                        Text(focus == nil ? "追加する" : "決定")
                             .fontWeight(.medium)
-                            .foregroundStyle(.black)
+                            .foregroundStyle((focus == nil) && !setName.isEmpty && nowPhase == .phase2 ? .white : .black)
                     }
             })
         }
@@ -150,8 +169,17 @@ struct AddProblemSetView: View {
                 }
                 .padding(30)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(
+                Color.blue.opacity(0.1)
+                .ignoresSafeArea()
+            )
             .fontWeight(.medium)
             .navigationBarBackButtonHidden(true)
+            .confettiCannon(trigger: $createdAppear)
+            .onAppear() {
+                createdAppear = true
+            }
             
         })
         

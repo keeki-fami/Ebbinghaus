@@ -28,6 +28,7 @@ struct ProblemCreatingView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var context
     @Binding var problemCreatingViewModel: ProblemCreatingViewModel
+    @State private var isKeyword = false
     
     
     enum Field: Hashable {
@@ -74,37 +75,52 @@ struct ProblemCreatingView: View {
                 .padding()
                 VStack {
                     HStack {
-                        VStack(alignment: .leading) {
-                            Text("キーワード")
-                                .font(.largeTitle)
-                                .fontWeight(.medium)
-                            Text("解答に含める単語を入力してください。")
-                        }
+                        Toggle("", isOn: $isKeyword)
+                            .labelsHidden()
+                        Text("正解判定に、キーワードを使用する")
                         Spacer()
                     }
-                    ForEach(keyword.indices, id: \.self) { idx in
-                        HStack {
-                            TextField("キーワード\(idx+1)", text: $keyword[idx], axis: .vertical)
-                                .textFieldStyle(.plain)
-                                .focused($focus, equals: .keyword)
-                            Spacer()
-                        }
-                    }
-                    Button (action: {
-                        keyword.append("")
-                    }, label: {
-                        Circle()
-                            .fill(.white)
-                            .frame(width: 60, height: 60)
-                            .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 0)
-                            .overlay() {
-                                Text("+")
-                                    .font(.largeTitle)
-                                    .fontWeight(.medium)
-                            }
-                    })
+                    Text("上のボタンがOFFの場合は、答えと同じ回答のみ正解にします。上のボタンがONの場合は、解答に、指定したキーワードがすべて含まれていた場合に正解にします。")
+//                        .font(.custom("", size: 20))
+                        .foregroundStyle(.gray)
+                        .font(.caption)
                 }
                 .padding()
+                if isKeyword {
+                    VStack {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text("キーワード")
+                                    .font(.largeTitle)
+                                    .fontWeight(.medium)
+                                Text("解答に含める単語を入力してください。")
+                            }
+                            Spacer()
+                        }
+                        ForEach(keyword.indices, id: \.self) { idx in
+                            HStack {
+                                TextField("キーワード\(idx+1)", text: $keyword[idx], axis: .vertical)
+                                    .textFieldStyle(.plain)
+                                    .focused($focus, equals: .keyword)
+                                Spacer()
+                            }
+                        }
+                        Button (action: {
+                            keyword.append("")
+                        }, label: {
+                            Circle()
+                                .fill(.white)
+                                .frame(width: 60, height: 60)
+                                .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 0)
+                                .overlay() {
+                                    Text("+")
+                                        .font(.largeTitle)
+                                        .fontWeight(.medium)
+                                }
+                        })
+                    }
+                    .padding()
+                }
             }
             .contentShape(Rectangle())
             .onTapGesture{
@@ -113,11 +129,14 @@ struct ProblemCreatingView: View {
             
             Button(action: {
                 if !(problem.isEmpty || answer.isEmpty) && focus == nil {
+                    print(isKeyword)
                     let problem = ProblemData(
                         problem: problem,
                         answer: answer,
-                        keyword: keyword
+                        keyword: keyword,
+                        problemType: isKeyword ? .wordProblem : .oneOnOne
                     )
+                    print("problemType; \(problem.problemType)")
                     problemCreatingViewModel.addProblem(problem: problem)
                     dismiss()
                 } else {
@@ -144,3 +163,9 @@ struct ProblemCreatingView: View {
         )
     }
 }
+
+#Preview {
+    @Previewable @State var problemCreatingViewModel = ProblemCreatingViewModel()
+    ProblemCreatingView(problemCreatingViewModel: $problemCreatingViewModel)
+}
+

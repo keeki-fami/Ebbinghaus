@@ -51,8 +51,10 @@ struct NothingToDoTodayView: View {
             TitleView(text: "今日の問題集")
             Text("1. 画面右下の「+」ボタンから、問題を追加しよう！")
                 .foregroundStyle(.gray)
+                .font(.callout)
             Text("2. 「今日の問題集」に表示される問題を解こう！")
                 .foregroundStyle(.gray)
+                .font(.callout)
         } else {
             VStack {
                 TitleView(text: "今日の問題集")
@@ -243,10 +245,10 @@ let previewContainer: ModelContainer = {
             ProblemSet(
                 setName: "Math",
                 problem: [
-                    ProblemData(problem: "1+1=", answer: "2", keyword: ["2"]),
-                    ProblemData(problem: "2+1=", answer: "3", keyword: ["3"]),
-                    ProblemData(problem: "3+1=", answer: "4", keyword: ["4"]),
-                    ProblemData(problem: "4+1=", answer: "5", keyword: ["5"])],
+                    ProblemData(problem: "1+1=", answer: "2", keyword: ["2"], problemType: .oneOnOne),
+                    ProblemData(problem: "2+1=", answer: "3", keyword: ["3"], problemType: .oneOnOne),
+                    ProblemData(problem: "3+1=", answer: "4", keyword: ["4"], problemType: .oneOnOne),
+                    ProblemData(problem: "4+1=", answer: "5", keyword: ["5"], problemType: .oneOnOne)],
                 notifyDate: Date().timeIntervalSince1970,
                 status: .phase1
             )
@@ -254,7 +256,7 @@ let previewContainer: ModelContainer = {
         container.mainContext.insert(
             ProblemSet(
                 setName: "Math",
-                problem: [ProblemData(problem: "2+2=", answer: "4", keyword: ["4"])],
+                problem: [ProblemData(problem: "2+2=", answer: "4", keyword: ["4"], problemType: .oneOnOne)],
                 notifyDate: Date().timeIntervalSince1970,
                 status: .phase1
             )

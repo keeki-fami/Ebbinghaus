@@ -39,6 +39,8 @@ struct ProblemView: View {
                     if problemSet.problem.count > 0 {
                         ScrollView {
                             Text("\(problemSet.problem[nowProblem].problem)")
+                            Text(problemSet.problem[nowProblem].problemType == .wordProblem ? "文章題" : "一問一答")
+                                .fontWeight(.thin)
                             
                             TextField("回答を入力", text: $inputText, axis: .vertical)
                                 .textFieldStyle(textFields())
@@ -48,6 +50,15 @@ struct ProblemView: View {
                             //                                .padding()
                             
                             if nowSolvePhase == .solved {
+                                if isSuccess {
+                                    Text("🥳正解!")
+                                        .foregroundStyle(.green)
+                                        .fontWeight(.bold)
+                                } else {
+                                    Text("😱不正解...")
+                                        .foregroundStyle(.gray)
+                                        .fontWeight(.bold)
+                                }
                                 VStack {
                                     Text("答え")
                                         .fontWeight(.medium)
@@ -55,15 +66,17 @@ struct ProblemView: View {
                                     Text("\(problemSet.problem[nowProblem].answer)")
                                         .padding()
                                 }
-                                LazyVStack {
-                                    Text("キーワードチェック")
-                                        .fontWeight(.medium)
-                                        .padding()
-                                    ForEach(problemSet.problem[nowProblem].keyword, id: \.self) { keyword in
-                                        if let check = checkList[keyword], !check {
-                                            Text("\(keyword) : ❌")
-                                        } else {
-                                            Text("\(keyword) : ✅")
+                                if problemSet.problem[nowProblem].problemType == .wordProblem {
+                                    LazyVStack {
+                                        Text("キーワードチェック")
+                                            .fontWeight(.medium)
+                                            .padding()
+                                        ForEach(problemSet.problem[nowProblem].keyword, id: \.self) { keyword in
+                                            if let check = checkList[keyword], !check {
+                                                Text("\(keyword) : ❌")
+                                            } else {
+                                                Text("\(keyword) : ✅")
+                                            }
                                         }
                                     }
                                 }
@@ -73,11 +86,11 @@ struct ProblemView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 Spacer()
-                if nowSolvePhase == .solved {
-                    Button(isSuccess ? "不正解として処理する" : "正解として処理する") {
-                        handleSubButton()
-                    }
-                }
+//                if nowSolvePhase == .solved {
+//                    Button(isSuccess ? "不正解として処理する" : "正解として処理する") {
+//                        handleSubButton()
+//                    }
+//                }
                 Button(action: {
                     handleMainButton()
                 }, label: {
@@ -222,12 +235,33 @@ struct ProblemView: View {
                 focus = nil
             } else {
                 // 正誤判定
-                if checkKeyword() {
-                    correctCount += 1
-                    isSuccess = true
-                    problemSet.problem[nowProblem].missCount += 1
+                // 文章題
+                var generator: UINotificationFeedbackGenerator = UINotificationFeedbackGenerator()
+                if problemSet.problem[nowProblem].problemType == .wordProblem {
+                    if checkKeyword() {
+                        correctCount += 1
+                        isSuccess = true
+                        generator.prepare()
+                        generator.notificationOccurred(.success)
+                    } else {
+                        isSuccess = false
+                        generator.prepare()
+                        generator.notificationOccurred(.error)
+                        problemSet.problem[nowProblem].missCount += 1
+                    }
                 } else {
-                    isSuccess = false
+                    // 一問一答
+                    if problemSet.problem[nowProblem].answer == inputText {
+                        isSuccess = true
+                        generator.prepare()
+                        generator.notificationOccurred(.success)
+                    } else {
+                        generator.prepare()
+                        generator.notificationOccurred(.error)
+                        isSuccess = false
+                        problemSet.problem[nowProblem].missCount += 1
+                    }
+                    
                 }
                 withAnimation {
                     progressVar += 1

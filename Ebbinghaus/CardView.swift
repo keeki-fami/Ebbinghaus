@@ -95,7 +95,12 @@ struct MiniCardView: View {
     let setName: String
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
-            .fill(.white)
+            .fill(
+                LinearGradient(stops: [
+                    .init(color: Color(red: 58/255, green: 118/255, blue: 214/255), location: 0.0),
+                    .init(color: Color(red: 38/255, green: 62/255, blue: 112/255), location: 1.0)
+                ], startPoint: .topLeading, endPoint: .bottomTrailing)
+            )
             .frame(width: 200, height: 100)
             .shadow(color: .black.opacity(0.25), radius: 5)
             .overlay() {
@@ -103,6 +108,7 @@ struct MiniCardView: View {
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(20)
+                    .foregroundStyle(Color.white)
             }
     }
 }

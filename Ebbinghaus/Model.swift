@@ -17,15 +17,17 @@ class ProblemData: Identifiable, Hashable {
     var id: String
     var missCount: Int
     var problemSet: ProblemSet?
+    var problemType: ProblemType
 
     
-    init(problem: String, answer: String, keyword: [String], problemSet: ProblemSet? = nil) {
+    init(problem: String, answer: String, keyword: [String], problemSet: ProblemSet? = nil, problemType: ProblemType) {
         self.problem = problem
         self.answer = answer
         self.keyword = keyword
         self.problemSet = problemSet
         self.id = UUID().uuidString
         self.missCount = 0
+        self.problemType = problemType
     }
     
     static func == (lhs: ProblemData, rhs: ProblemData) -> Bool {
@@ -47,6 +49,11 @@ enum Phase: Int, Codable {
     case phase4 = 4
     case phase5 = 5
     case complete = 6
+}
+
+enum ProblemType: Int, Codable {
+    case wordProblem = 1 // 文章題
+    case oneOnOne = 2 // 例題
 }
 
 @Model
