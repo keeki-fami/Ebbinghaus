@@ -120,6 +120,10 @@ struct ProblemCreatingView: View {
                         })
                     }
                     .padding()
+                    Rectangle()
+                        .fill(.clear)
+                        .frame(height: 300)
+                    
                 }
             }
             .contentShape(Rectangle())

@@ -23,6 +23,7 @@ struct ProblemView: View {
     @State private var checkList: [String: Bool] = .init()
     @State private var correctCount = 0
     @Environment(\.modelContext) var context
+    @State private var incorrectProblem: IncorrectProblem?
     
     
     struct backgroundAnimator {
@@ -30,52 +31,65 @@ struct ProblemView: View {
     }
     
     var body: some View {
-        ZStack {
-            VStack {
-                ProgressView(value: Double(progressVar)/Double(problemSet.problem.count))
-                    .padding()
-                Spacer()
-                Group {
-                    if problemSet.problem.count > 0 {
-                        ScrollView {
-                            Text("\(problemSet.problem[nowProblem].problem)")
-                            Text(problemSet.problem[nowProblem].problemType == .wordProblem ? "文章題" : "一問一答")
-                                .fontWeight(.thin)
-                            
-                            TextField("回答を入力", text: $inputText, axis: .vertical)
-                                .textFieldStyle(textFields())
-                                .lineLimit(5...10)
-                                .focused($focus, equals: .textEd)
-                                .padding()
-                            //                                .padding()
-                            
-                            if nowSolvePhase == .solved {
-                                if isSuccess {
-                                    Text("🥳正解!")
-                                        .foregroundStyle(.green)
-                                        .fontWeight(.bold)
-                                } else {
-                                    Text("😱不正解...")
-                                        .foregroundStyle(.gray)
-                                        .fontWeight(.bold)
-                                }
-                                VStack {
-                                    Text("答え")
-                                        .fontWeight(.medium)
-                                        .padding()
-                                    Text("\(problemSet.problem[nowProblem].answer)")
-                                        .padding()
-                                }
-                                if problemSet.problem[nowProblem].problemType == .wordProblem {
-                                    LazyVStack {
-                                        Text("キーワードチェック")
+        GeometryReader { geometry in
+            
+            
+            ZStack {
+                VStack {
+                    ProgressView(value: Double(progressVar)/Double(problemSet.problem.count))
+                        .padding()
+                    Spacer()
+                    Group {
+                        if problemSet.problem.count > 0 {
+                            ScrollView {
+                                Text("\(problemSet.problem[nowProblem].problem)")
+                                Text(problemSet.problem[nowProblem].problemType == .wordProblem ? "文章題" : "一問一答")
+                                    .fontWeight(.thin)
+                                
+                                TextField("回答を入力", text: $inputText, axis: .vertical)
+                                    .textFieldStyle(textFields())
+                                    .lineLimit(5...10)
+                                    .focused($focus, equals: .textEd)
+                                    .padding()
+                                //                                .padding()
+                                
+                                if nowSolvePhase == .solved {
+                                    if isSuccess {
+                                        Text("🥳正解!")
+                                            .foregroundStyle(.green)
+                                            .fontWeight(.bold)
+                                    } else {
+                                        Text("😱不正解...")
+                                            .font(Font.largeTitle.bold())
+                                            .foregroundStyle(.gray)
+                                            .fontWeight(.bold)
+                                    }
+                                    VStack {
+                                        Text("答え")
+                                            .foregroundStyle(.gray)
                                             .fontWeight(.medium)
+                                        Text("\(problemSet.problem[nowProblem].answer)")
                                             .padding()
-                                        ForEach(problemSet.problem[nowProblem].keyword, id: \.self) { keyword in
-                                            if let check = checkList[keyword], !check {
-                                                Text("\(keyword) : ❌")
-                                            } else {
-                                                Text("\(keyword) : ✅")
+                                    }
+                                    .padding()
+                                    .frame(width: geometry.size.width*0.8)
+                                    .background(Color(red: 242/255, green: 244/255, blue: 245/255))
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .overlay() {
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(.blue, lineWidth: 1)
+                                    }
+                                    if problemSet.problem[nowProblem].problemType == .wordProblem {
+                                        LazyVStack {
+                                            Text("キーワードチェック")
+                                                .fontWeight(.medium)
+                                                .padding()
+                                            ForEach(problemSet.problem[nowProblem].keyword, id: \.self) { keyword in
+                                                if let check = checkList[keyword], !check {
+                                                    Text("\(keyword) : ❌")
+                                                } else {
+                                                    Text("\(keyword) : ✅")
+                                                }
                                             }
                                         }
                                     }
@@ -83,51 +97,52 @@ struct ProblemView: View {
                             }
                         }
                     }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                Spacer()
-//                if nowSolvePhase == .solved {
-//                    Button(isSuccess ? "不正解として処理する" : "正解として処理する") {
-//                        handleSubButton()
-//                    }
-//                }
-                Button(action: {
-                    handleMainButton()
-                }, label: {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(.white)
-                        .frame(width: 300, height: 50)
-                        .shadow(color: .black.opacity(0.25), radius: 10)
-                        .overlay() {
-                            if nowSolvePhase == .solved {
-                                Text("次へ")
-                            } else {
-                                Text(focus == nil ? "解答" : "OK")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    Spacer()
+                    //                if nowSolvePhase == .solved {
+                    //                    Button(isSuccess ? "不正解として処理する" : "正解として処理する") {
+                    //                        handleSubButton()
+                    //                    }
+                    //                }
+                    Button(action: {
+                        handleMainButton()
+                    }, label: {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(.white)
+                            .frame(width: 300, height: 50)
+                            .shadow(color: .black.opacity(0.25), radius: 10)
+                            .overlay() {
+                                if nowSolvePhase == .solved {
+                                    Text("次へ")
+                                } else {
+                                    Text(focus == nil ? "解答" : "OK")
+                                }
                             }
-                        }
-                        .padding()
-                })
+                            .padding()
+                    })
+                }
+                .background(
+                    Color.blue.opacity(0.1)
+                        .ignoresSafeArea()
+                )
+                //            .background(
+                //                (isSuccess ? Color.green.opacity(0.5) : Color.red.opacity(0.5))
+                //                    .ignoresSafeArea()
+                //                    .keyframeAnimator(initialValue: backgroundAnimator(), trigger: isAnimated, content: { content, value in
+                //                        content
+                //                            .opacity(value.opacity)
+                //
+                //                    } , keyframes: { _ in
+                //                        KeyframeTrack(\.opacity) {
+                //                            MoveKeyframe(0.5)
+                //                            LinearKeyframe(0.5, duration: 0.25)
+                //                            CubicKeyframe(0.0, duration: 1)
+                //                        }
+                //
+                //                    })
+                //            )
             }
-            .background(
-                Color.blue.opacity(0.1)
-                    .ignoresSafeArea()
-            )
-//            .background(
-//                (isSuccess ? Color.green.opacity(0.5) : Color.red.opacity(0.5))
-//                    .ignoresSafeArea()
-//                    .keyframeAnimator(initialValue: backgroundAnimator(), trigger: isAnimated, content: { content, value in
-//                        content
-//                            .opacity(value.opacity)
-//                        
-//                    } , keyframes: { _ in
-//                        KeyframeTrack(\.opacity) {
-//                            MoveKeyframe(0.5)
-//                            LinearKeyframe(0.5, duration: 0.25)
-//                            CubicKeyframe(0.0, duration: 1)
-//                        }
-//                        
-//                    })
-//            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
     
@@ -217,7 +232,8 @@ struct ProblemView: View {
                         problemSet: problemSet.setName,
                         next: problemSet.notifyDate,
                         correct: correctCount,
-                        incorrect: problemCount - correctCount
+                        incorrect: problemCount - correctCount,
+                        incorrectProblem: incorrectProblem
                     )
                     
                 }
@@ -245,6 +261,12 @@ struct ProblemView: View {
                         generator.notificationOccurred(.success)
                     } else {
                         isSuccess = false
+                        let problem = problemSet.problem[nowProblem]
+                        incorrectProblem = IncorrectProblem(
+                            problem: problem.problem,
+                            answer: inputText,
+                            correctAnswer: problem.answer
+                        )
                         generator.prepare()
                         generator.notificationOccurred(.error)
                         problemSet.problem[nowProblem].missCount += 1
@@ -259,6 +281,12 @@ struct ProblemView: View {
                         generator.prepare()
                         generator.notificationOccurred(.error)
                         isSuccess = false
+                        let problem = problemSet.problem[nowProblem]
+                        incorrectProblem = IncorrectProblem(
+                            problem: problem.problem,
+                            answer: inputText,
+                            correctAnswer: problem.answer
+                        )
                         problemSet.problem[nowProblem].missCount += 1
                     }
                     
@@ -299,15 +327,3 @@ struct ProblemView: View {
         return flag
     }
 }
-
-//struct textFields: TextFieldStyle {
-//    func _body(configuration: TextField<Self._Label>) -> some View {
-//        configuration
-//            .overlay() {
-//                RoundedRectangle(cornerRadius: 5)
-//                    .stroke(.gray.opacity(0.5), lineWidth: 1)
-//                    .background(.white.opacity(0.25).shadow(.inner(color: .black.opacity(0.25), radius: 5, x: 5, y: 5)))
-//                    .allowsHitTesting(false)
-//            }
-//    }
-//}

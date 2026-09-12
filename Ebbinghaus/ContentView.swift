@@ -23,12 +23,20 @@ extension Date {
     }
 }
 
+
+struct IncorrectProblem: Hashable {
+    var problem: String
+    var answer: String
+    var correctAnswer: String
+}
+
 struct ResultViewData: Hashable {
     var nextPhase: Phase
     var problemSet: String
     var next: TimeInterval?
     var correct: Int
     var incorrect: Int
+    var incorrectProblem: IncorrectProblem?
 }
 
 struct TitleView: View {
