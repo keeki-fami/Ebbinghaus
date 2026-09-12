@@ -65,23 +65,26 @@ struct AddProblemSetView: View {
                 ScrollView {
                     VStack {
                         ForEach(problemCreatingViewModel.problems) { problem in
-//                            NavigationLink(destination: {
-//                                
-//                            }, label: {
-//                            })
-                            ProblemCardView(
-                                problem: problem.problem,
-                                answer: problem.answer
-                            )
-                            .contextMenu {
-                                Button("削除", role: .destructive) {
-                                    if let idx = problemCreatingViewModel.problems.firstIndex(of: problem) {
-                                        withAnimation {
-                                            problemCreatingViewModel.problems.remove(at: idx)
+                            NavigationLink(destination: {
+                                ProblemCreatingView(
+                                    data: problem,
+                                    problemCreatingViewModel: $problemCreatingViewModel
+                                )
+                            }, label: {
+                                ProblemCardView(
+                                    problem: problem.problem,
+                                    answer: problem.answer
+                                )
+                                .contextMenu {
+                                    Button("削除", role: .destructive) {
+                                        if let idx = problemCreatingViewModel.problems.firstIndex(of: problem) {
+                                            withAnimation {
+                                                problemCreatingViewModel.problems.remove(at: idx)
+                                            }
                                         }
                                     }
                                 }
-                            }
+                            })
                         }
                         NavigationLink(destination: {
                             ProblemCreatingView(problemCreatingViewModel: $problemCreatingViewModel)

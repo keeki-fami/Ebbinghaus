@@ -56,6 +56,7 @@ struct ProblemView: View {
                                 if nowSolvePhase == .solved {
                                     if isSuccess {
                                         Text("🥳正解!")
+                                            .font(Font.largeTitle.bold())
                                             .foregroundStyle(.green)
                                             .fontWeight(.bold)
                                     } else {

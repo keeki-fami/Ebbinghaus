@@ -95,6 +95,9 @@ struct ResultViewIncorrect: View {
     var body: some View {
         ScrollView {
             VStack {
+                Rectangle()
+                    .fill(.clear)
+                    .frame(height: 10)
                 Text("間違えた問題")
                     .font(.largeTitle.bold())
                 if let incorrectProblem = incorrectProblem {
@@ -108,7 +111,7 @@ struct ResultViewIncorrect: View {
                         Text("あなたの回答 - \(incorrectProblem.answer)")
                             .padding(.bottom)
                     }
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.black)
                     .padding()
                     .frame(width: geometry.size.width*0.8)
                     .background(Color(red: 242/255, green: 244/255, blue: 245/255))

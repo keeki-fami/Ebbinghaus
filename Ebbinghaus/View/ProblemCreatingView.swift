@@ -20,16 +20,45 @@ class ProblemCreatingViewModel {
     }
 }
 
+struct KeyWordElement: Identifiable, Hashable {
+    var id: String = UUID().uuidString
+    var text: String = ""
+}
+
 struct ProblemCreatingView: View {
     @State private var problem = ""
     @State private var answer = ""
-    @State private var keyword: [String] = []
+    @State private var keyword: [KeyWordElement] = []
     @FocusState private var focus: Field?
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var context
     @Binding var problemCreatingViewModel: ProblemCreatingViewModel
     @State private var isKeyword = false
+    @State private var isAlert = false
+    @State private var afterAdd = false
+    @State private var problemData: ProblemData?
     
+    init(problemCreatingViewModel: Binding<ProblemCreatingViewModel>) {
+        _problemCreatingViewModel = problemCreatingViewModel
+    }
+    
+    init(data: ProblemData, problemCreatingViewModel: Binding<ProblemCreatingViewModel>) {
+        self._problemCreatingViewModel = problemCreatingViewModel
+        self._afterAdd = State(initialValue: true)
+        self._problemData = State(initialValue: data)
+        self._problem = State(initialValue: data.problem)
+        self._answer = State(initialValue: data.answer)
+        self._keyword = State(
+            initialValue: data.keyword.map {
+                KeyWordElement(text: $0)
+            }
+        )
+        if data.problemType == .wordProblem {
+            self._isKeyword = State(initialValue: true)
+        } else {
+            self._isKeyword = State(initialValue: false)
+        }
+    }
     
     enum Field: Hashable {
         case problem
@@ -99,14 +128,27 @@ struct ProblemCreatingView: View {
                         }
                         ForEach(keyword.indices, id: \.self) { idx in
                             HStack {
-                                TextField("キーワード\(idx+1)", text: $keyword[idx], axis: .vertical)
+                                Button(action: {
+                                    let element = keyword[idx]
+                                    keyword = keyword.filter{$0 != element}
+                                },label: {
+                                    Circle()
+                                        .fill(.red)
+                                        .frame(width: 25, height: 25)
+                                        .overlay() {
+                                            Text("-")
+                                                .foregroundStyle(.white)
+                                        }
+                                })
+                                TextField("キーワード\(idx+1)", text: $keyword[idx].text, axis: .vertical)
                                     .textFieldStyle(.plain)
                                     .focused($focus, equals: .keyword)
                                 Spacer()
                             }
                         }
                         Button (action: {
-                            keyword.append("")
+                            var element = KeyWordElement()
+                            keyword.append(element)
                         }, label: {
                             Circle()
                                 .fill(.white)
@@ -132,17 +174,49 @@ struct ProblemCreatingView: View {
             }
             
             Button(action: {
-                if !(problem.isEmpty || answer.isEmpty) && focus == nil {
-                    print(isKeyword)
-                    let problem = ProblemData(
-                        problem: problem,
-                        answer: answer,
-                        keyword: keyword,
-                        problemType: isKeyword ? .wordProblem : .oneOnOne
-                    )
-                    print("problemType; \(problem.problemType)")
-                    problemCreatingViewModel.addProblem(problem: problem)
-                    dismiss()
+                var flag: Bool = true
+                for word in keyword {
+                    if word.text.isEmpty {
+                        flag = false
+                    }
+                }
+                if keyword.isEmpty {
+                    flag = false
+                }
+                if focus == nil {
+                    if !(problem.isEmpty || answer.isEmpty) && (!isKeyword || (isKeyword && flag)) {
+                        if !afterAdd {
+                            // 空のところがあったらアラートを出す。
+                            print(isKeyword)
+                            var keyWord: [String] = .init()
+                            keyword.forEach {
+                                keyWord.append($0.text)
+                            }
+                            let problem = ProblemData(
+                                problem: problem,
+                                answer: answer,
+                                keyword: keyWord,
+                                problemType: isKeyword ? .wordProblem : .oneOnOne
+                            )
+                            print("problemType; \(problem.problemType)")
+                            problemCreatingViewModel.addProblem(problem: problem)
+                            dismiss()
+                        } else {
+                            
+                            problemData?.answer = self.answer
+                            problemData?.problem = self.problem
+                            problemData?.problemType = isKeyword ? .wordProblem : .oneOnOne
+                            var keyWord: [String] = .init()
+                            keyword.forEach {
+                                keyWord.append($0.text)
+                            }
+                            problemData?.keyword = keyWord
+                            dismiss()
+                        }
+                    } else {
+                        // アラート
+                        isAlert = true
+                    }
                 } else {
                     focus = nil
                 }
@@ -158,13 +232,16 @@ struct ProblemCreatingView: View {
                             .foregroundStyle(!(problem.isEmpty || answer.isEmpty) && focus == nil ? .white : .black)
                     }
             })
-            
-            //        }
         }
         .background(
             Color.blue.opacity(0.1)
                 .ignoresSafeArea()
         )
+        .alert("エラー", isPresented: $isAlert, actions: {
+            Button("OK") {}
+        }, message: {
+            Text(isKeyword ? "問題, 回答, キーワードを全て埋めてください" : "問題, 解答を全て埋めてください。")
+        })
     }
 }
 
