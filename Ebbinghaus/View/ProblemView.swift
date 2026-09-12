@@ -43,7 +43,7 @@ struct ProblemView: View {
                         if problemSet.problem.count > 0 {
                             ScrollView {
                                 Text("\(problemSet.problem[nowProblem].problem)")
-                                Text(problemSet.problem[nowProblem].problemType == .wordProblem ? "文章題" : "一問一答")
+                                Text(problemSet.problem[nowProblem].problemType == .wordProblem ? "記述問題" : "一問一答")
                                     .fontWeight(.thin)
                                 
                                 TextField("回答を入力", text: $inputText, axis: .vertical)
