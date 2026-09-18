@@ -27,6 +27,7 @@ struct AddProblemSetView: View {
     @State var problemCreatingViewModel = ProblemCreatingViewModel()
     @Binding var path: NavigationPath
     @State private var selectedAddMethod: AddMethod = .manual
+    @State private var isAlert = false
     let pushedDate: Date
     
     enum Screen: Hashable {
@@ -116,7 +117,11 @@ struct AddProblemSetView: View {
             
             Button(action: {
                 if nowPhase == .phase1 {
-                    nowPhase = .phase2
+                    if problemCreatingViewModel.problems.isEmpty {
+                        isAlert = true
+                    } else {
+                        nowPhase = .phase2
+                    }
                 } else if nowPhase == .phase2 {
                     if focus != nil {
                         withAnimation {
@@ -194,6 +199,11 @@ struct AddProblemSetView: View {
         .onAppear {
             focus = .setName
         }
+        .alert("エラー", isPresented: $isAlert, actions: {
+            Button("OK") {}
+        }, message: {
+            Text("問題は一つ以上追加してください。")
+        })
 //        .toolbar {
 //#if os(macOS)
 //            ToolbarItem(

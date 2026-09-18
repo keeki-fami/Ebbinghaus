@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SwiftData
-import SwiftData
 
 @main
 struct EbbinghausApp: App {
@@ -21,7 +20,7 @@ struct EbbinghausApp: App {
                 OnboardingView()
                     .task {
                         do {
-                            try await Task.sleep(nanoseconds: 1500000000)
+                            try await Task.sleep(nanoseconds: 750000000)
                         } catch {
                             print("error: \(error)")
                         }
