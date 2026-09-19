@@ -7,6 +7,7 @@
 import SwiftUI
 import SwiftData
 import ConfettiSwiftUI
+import WidgetKit
 
 struct AddProblemSetView: View {
     
@@ -187,6 +188,7 @@ struct AddProblemSetView: View {
             .confettiCannon(trigger: $createdAppear)
             .onAppear() {
                 createdAppear = true
+                WidgetCenter.shared.reloadAllTimelines()
             }
             
         })

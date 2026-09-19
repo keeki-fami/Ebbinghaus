@@ -53,11 +53,21 @@
 			);
 			target = 94B617B1305E288900D53048 /* MyWidgetExtension */;
 		};
+		94B617E9305E2DD300D53048 /* Exceptions for "Ebbinghaus" folder in "MyWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Model.swift,
+			);
+			target = 94B617B1305E288900D53048 /* MyWidgetExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		948BCC842FFDD6BE0045DE0E /* Ebbinghaus */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				94B617E9305E2DD300D53048 /* Exceptions for "Ebbinghaus" folder in "MyWidgetExtension" target */,
+			);
 			path = Ebbinghaus;
 			sourceTree = "<group>";
 		};
