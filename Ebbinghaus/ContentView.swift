@@ -98,6 +98,7 @@ struct NothingToDoTodayView: View {
 
 struct ContentView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.scenePhase) private var scenePhase
     @State private var isSheet = false
     @State private var isNavigation = false
     @State private var presented: [ProblemSet] = []
@@ -226,6 +227,12 @@ struct ContentView: View {
                     })
                     .padding(30)
             }
+            .onChange(of: scenePhase, {
+                // activeになったら、dateを更新する。
+                if scenePhase == .active {
+                    date = Date().timeIntervalSince1970
+                }
+            })
             .navigationDestination(for: ProblemSet.self) { set in
                 ProblemView(problemSet: set, path: $path)
             }

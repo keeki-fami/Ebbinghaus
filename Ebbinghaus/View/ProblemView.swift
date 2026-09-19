@@ -276,6 +276,7 @@ struct ProblemView: View {
                     // 一問一答
                     if problemSet.problem[nowProblem].answer == inputText {
                         isSuccess = true
+                        correctCount += 1
                         generator.prepare()
                         generator.notificationOccurred(.success)
                     } else {
