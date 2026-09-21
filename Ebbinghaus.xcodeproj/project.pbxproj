@@ -46,6 +46,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		942AF39B3061080D00E98F9B /* Exceptions for "Ebbinghaus" folder in "Ebbinghaus" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 948BCC812FFDD6BE0045DE0E /* Ebbinghaus */;
+		};
 		94B617CC305E288C00D53048 /* Exceptions for "MyWidget" folder in "MyWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -66,6 +73,7 @@
 		948BCC842FFDD6BE0045DE0E /* Ebbinghaus */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				942AF39B3061080D00E98F9B /* Exceptions for "Ebbinghaus" folder in "Ebbinghaus" target */,
 				94B617E9305E2DD300D53048 /* Exceptions for "Ebbinghaus" folder in "MyWidgetExtension" target */,
 			);
 			path = Ebbinghaus;
@@ -400,6 +408,7 @@
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Ebbinghaus/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Ebbinghaus;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -442,6 +451,7 @@
 				DEVELOPMENT_TEAM = LMUVG7YFCW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Ebbinghaus/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Ebbinghaus;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

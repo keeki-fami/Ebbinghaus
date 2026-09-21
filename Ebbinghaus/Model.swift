@@ -10,14 +10,14 @@ import SwiftUI
 
 @Model
 class ProblemData: Identifiable, Hashable {
-    var problem: String
-    var answer: String
-    var keyword: [String]
-    @Attribute(.unique)
-    var id: String
-    var missCount: Int
+    var problem: String = ""
+    var answer: String = ""
+    var keyword: [String] = []
+//    @Attribute(.unique)
+    var id: String = UUID().uuidString
+    var missCount: Int = 0
     var problemSet: ProblemSet?
-    var problemType: ProblemType
+    var problemType: ProblemType = ProblemType.wordProblem
 
     
     init(problem: String, answer: String, keyword: [String], problemSet: ProblemSet? = nil, problemType: ProblemType) {
@@ -58,13 +58,13 @@ enum ProblemType: Int, Codable {
 
 @Model
 class ProblemSet: Identifiable, Hashable {
-    var setName: String
-    @Relationship(deleteRule: .cascade) var problem: [ProblemData]
-    var notifyDate: TimeInterval
-    var status: Phase
-    @Attribute(.unique)
-    var id: String
-    var counter: Int
+    var setName: String = ""
+    @Relationship(deleteRule: .cascade) var problem: [ProblemData]?
+    var notifyDate: TimeInterval = 0
+    var status: Phase = Phase.phase1
+//    @Attribute(.unique)
+    var id: String = UUID().uuidString
+    var counter: Int = 0
     
     var rest: TimeInterval {
         notifyDate - Date().timeIntervalSince1970

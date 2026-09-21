@@ -36,14 +36,16 @@ struct ProblemView: View {
             
             ZStack {
                 VStack {
-                    ProgressView(value: Double(progressVar)/Double(problemSet.problem.count))
-                        .padding()
+                    if let problem = problemSet.problem {
+                        ProgressView(value: Double(progressVar)/Double(problem.count))
+                            .padding()
+                    }
                     Spacer()
                     Group {
-                        if problemSet.problem.count > 0 {
+                        if problemSet.problem!.count > 0 {
                             ScrollView {
-                                Text("\(problemSet.problem[nowProblem].problem)")
-                                Text(problemSet.problem[nowProblem].problemType == .wordProblem ? "記述問題" : "一問一答")
+                                Text("\(problemSet.problem![nowProblem].problem)")
+                                Text(problemSet.problem![nowProblem].problemType == .wordProblem ? "記述問題" : "一問一答")
                                     .fontWeight(.thin)
                                 
                                 TextField("回答を入力", text: $inputText, axis: .vertical)
@@ -69,7 +71,7 @@ struct ProblemView: View {
                                         Text("答え")
                                             .foregroundStyle(.gray)
                                             .fontWeight(.medium)
-                                        Text("\(problemSet.problem[nowProblem].answer)")
+                                        Text("\(problemSet.problem![nowProblem].answer)")
                                             .padding()
                                     }
                                     .padding()
@@ -80,12 +82,12 @@ struct ProblemView: View {
                                         RoundedRectangle(cornerRadius: 10)
                                             .stroke(.blue, lineWidth: 1)
                                     }
-                                    if problemSet.problem[nowProblem].problemType == .wordProblem {
+                                    if problemSet.problem![nowProblem].problemType == .wordProblem {
                                         LazyVStack {
                                             Text("キーワードチェック")
                                                 .fontWeight(.medium)
                                                 .padding()
-                                            ForEach(problemSet.problem[nowProblem].keyword, id: \.self) { keyword in
+                                            ForEach(problemSet.problem![nowProblem].keyword, id: \.self) { keyword in
                                                 if let check = checkList[keyword], !check {
                                                     Text("\(keyword) : ❌")
                                                 } else {
@@ -191,7 +193,7 @@ struct ProblemView: View {
     func handleMainButton() {
         if nowSolvePhase == .solved {
             // 問題終了
-            if nowProblem + 1 ==  problemSet.problem.count {
+            if nowProblem + 1 ==  problemSet.problem!.count {
                 
                 var resultViewData: ResultViewData
                 if UserDefaults.standard.bool(forKey: "isUpdateStatus") {
@@ -202,7 +204,7 @@ struct ProblemView: View {
                 if problemSet.status == .complete {
                     context.delete(problemSet)
                     
-                    let problemCount = problemSet.problem.count
+                    let problemCount = problemSet.problem!.count
                     resultViewData = ResultViewData(
                         nextPhase: problemSet.status,
                         problemSet: problemSet.setName,
@@ -227,7 +229,7 @@ struct ProblemView: View {
                         }
                     }
                     
-                    let problemCount = problemSet.problem.count
+                    let problemCount = problemSet.problem!.count
                     resultViewData = ResultViewData(
                         nextPhase: problemSet.status,
                         problemSet: problemSet.setName,
@@ -254,7 +256,7 @@ struct ProblemView: View {
                 // 正誤判定
                 // 文章題
                 var generator: UINotificationFeedbackGenerator = UINotificationFeedbackGenerator()
-                if problemSet.problem[nowProblem].problemType == .wordProblem {
+                if problemSet.problem![nowProblem].problemType == .wordProblem {
                     if checkKeyword() {
                         correctCount += 1
                         isSuccess = true
@@ -262,7 +264,7 @@ struct ProblemView: View {
                         generator.notificationOccurred(.success)
                     } else {
                         isSuccess = false
-                        let problem = problemSet.problem[nowProblem]
+                        let problem = problemSet.problem![nowProblem]
                         incorrectProblem = IncorrectProblem(
                             problem: problem.problem,
                             answer: inputText,
@@ -270,11 +272,11 @@ struct ProblemView: View {
                         )
                         generator.prepare()
                         generator.notificationOccurred(.error)
-                        problemSet.problem[nowProblem].missCount += 1
+                        problemSet.problem![nowProblem].missCount += 1
                     }
                 } else {
                     // 一問一答
-                    if problemSet.problem[nowProblem].answer == inputText {
+                    if problemSet.problem![nowProblem].answer == inputText {
                         isSuccess = true
                         correctCount += 1
                         generator.prepare()
@@ -283,13 +285,13 @@ struct ProblemView: View {
                         generator.prepare()
                         generator.notificationOccurred(.error)
                         isSuccess = false
-                        let problem = problemSet.problem[nowProblem]
+                        let problem = problemSet.problem![nowProblem]
                         incorrectProblem = IncorrectProblem(
                             problem: problem.problem,
                             answer: inputText,
                             correctAnswer: problem.answer
                         )
-                        problemSet.problem[nowProblem].missCount += 1
+                        problemSet.problem![nowProblem].missCount += 1
                     }
                     
                 }
@@ -304,7 +306,7 @@ struct ProblemView: View {
     }
     
     func handleSubButton() {
-        if nowProblem + 1 ==  problemSet.problem.count {
+        if nowProblem + 1 ==  problemSet.problem!.count {
             path.append(Result.result)
         } else {
             nowProblem += 1
@@ -316,7 +318,7 @@ struct ProblemView: View {
     
     func checkKeyword() -> Bool {
         var flag = true
-        let keywords = problemSet.problem[nowProblem].keyword
+        let keywords = problemSet.problem![nowProblem].keyword
         checkList = Dictionary.init()
         for (i, word) in keywords.enumerated() {
             if !inputText.contains(word) {
