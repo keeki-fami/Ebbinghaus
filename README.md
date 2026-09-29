@@ -1,27 +1,23 @@
-# Ebbinghaus
-## アプリの目的
-このアプリは、以下のような悩みを抱えている学生の課題を解決します。
-- 暗記するのが苦手。
-	- 覚えるのが苦手な学生
-- 勉強を頑張っているが、期待した通りの記憶ができない
-	- どのようにしたら、もっと効率の良い記憶ができるのか、方法を考えている。
+<h1 align="center"> EbbingHaus </h1> <br>
+<p align = "center">
+	<img alt="EbbingHaus" src="./images/ebbinghaus_icon.png" title="EbbingHaus" width="400">
+</p>
 
-## アプリが提供する機能
-このアプリは、以下のような特徴を持っています。
-- エビングハウスの忘却曲線にそった記憶学習を提供する。
-	- ユーザが追加した問題集は、エビングハウスの忘却曲線に沿って、1日後、3日後、1週間後、2週間後、1ヶ月後のスパンで復習を促します。復習の時期が近づくと、問題集はアプリの目立つ場所に表示されるようになり、さらに通知によるリマインドも行われます。
-- ユーザのモチベーションを掻き立てる仕様
-	- アプリ全体で統一したUIデザインを提供することで、ストレスなく学習を行うことができます。問題を解いた後のフィードバックや、問題に正解した際や、問題を追加した際の触覚フィードバック、によって、問題をとくことのモチベーションを向上させる狙いがあります。
-- 問題の追加方法
-	- よくある一問一答に加え、記述問題も追加するようにできる工夫があります。
+<p align="center">
+Learn smarter. Remember longer.
+</p>
 
-## プレイ方法
-いくつかプレイ方法があります。
-1. 直接アプリをビルドする。
-	- このプロジェクトをクローンし、アプリを直接ビルドしてください。
-1. TestFlightを利用する
-	- TestFlightをインストールし、アプリをこのURLから利用してください。
-	- https://testflight.apple.com/join/WBr3NgrP
-1. AppStoreからインストールする
-	- 9/12に申請を行いましたが、現在審査中です。
+## Overview
+Review your study materials at the right time, track your learning progress, and build lasting memories.Ebbinghaus helps you study smarter with spaced repetition.
 
+## Features
+- 📚 **Ebbinghaus Forgetting Curve** — Manage your reviews based on the Ebbinghaus forgetting curve.
+- 🔔 **Smart Review Reminders** — Get notified when it's time to review.
+- ✏️ **Various Question Types** — Create and practice different types of questions.
+- ⚡ **Native Swift App** — Built natively with Swift for a smooth and responsive experience.
+- 🆓 **Completely Free** — All features are available for free.
+
+## Feedback
+Feedback is always welcome! Feel free to reach out to me by email or on X.
+- Email : keekiapp.feedback@gmail.com
+- X : [@Keeki_factory](https://x.com/keeki_factory?s=11)
