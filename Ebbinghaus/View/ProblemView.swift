@@ -331,3 +331,15 @@ struct ProblemView: View {
         return flag
     }
 }
+
+struct textFields: TextFieldStyle {
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        configuration
+            .overlay() {
+                RoundedRectangle(cornerRadius: 5)
+                    .stroke(.gray.opacity(0.5), lineWidth: 1)
+                    .background(.white.opacity(0.25).shadow(.inner(color: .black.opacity(0.25), radius: 5, x: 5, y: 5)))
+                    .allowsHitTesting(false)
+            }
+    }
+}
