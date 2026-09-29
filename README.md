@@ -17,7 +17,23 @@ Review your study materials at the right time, track your learning progress, and
 - ⚡ **Native Swift App** — Built natively with Swift for a smooth and responsive experience.
 - 🆓 **Completely Free** — All features are available for free.
 
+## Installation
+```
+# Clone repository  
+git clone https://github.com/keeki-fami/Ebbinghaus.git
+cd Ebbinghaus
+
+# Open in Xcode
+open Ebbinghaus.xcodeproj
+
+# Build and run (⌘+R)
+```
+
+## Requirement
+- iOS: 18.0+
+
 ## Feedback
 Feedback is always welcome! Feel free to reach out to me by email or on X.
 - Email : keekiapp.feedback@gmail.com
 - X : [@Keeki_factory](https://x.com/keeki_factory?s=11)
+
