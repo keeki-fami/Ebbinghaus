@@ -40,22 +40,22 @@ struct AddProblemSetView: View {
                 .fill(.clear)
                 .frame(height: 50)
                 .overlay {
-                    switch nowPhase {
-                        case .phase1 :
-                        Text("ステップ 1/2")
-                    case .phase2 :
-                        Text("ステップ 2/2")
-                    default :
-                        Text("")
-                    }
-                }
+                     switch nowPhase {
+                         case .phase1 :
+                         Text(String(localized: "addProblem.step1"))
+                     case .phase2 :
+                         Text(String(localized: "addProblem.step2"))
+                     default :
+                         Text("")
+                     }
+                 }
             Spacer()
-            Text(nowPhase == .phase2 ? "問題集の名前を入力してください" : nowPhase == .phase1 ? "問題を追加してください。" : "nil")
-                .fontWeight(.medium)
-            Spacer()
-            // 問題セット名
-            if nowPhase == .phase2 {
-                TextField("問題セット名を入力", text: $setName)
+             Text(nowPhase == .phase2 ? String(localized: "addProblem.step2.description") : nowPhase == .phase1 ? String(localized: "addProblem.step1.creatingProblem.description") : "nil")
+                 .fontWeight(.medium)
+             Spacer()
+             // 問題セット名
+             if nowPhase == .phase2 {
+                 TextField(String(localized: "addProblem.step2.textField"), text: $setName)
                     .font(.largeTitle)
                     .textFieldStyle(.plain)
                     .focused($focus, equals: .setName)
@@ -148,33 +148,33 @@ struct AddProblemSetView: View {
                     .frame(maxWidth: 350,  maxHeight: 50)
                     .padding()
                     .overlay() {
-                        Text(focus == nil ? "追加する" : "決定")
-                            .fontWeight(.medium)
-                            .foregroundStyle((focus == nil) && !setName.isEmpty && nowPhase == .phase2 ? .white : .black)
-                    }
+                         Text(focus == nil ? String(localized: "button.add") : String(localized: "button.determine"))
+                             .fontWeight(.medium)
+                             .foregroundStyle((focus == nil) && !setName.isEmpty && nowPhase == .phase2 ? .white : .black)
+                      }
             })
         }
         .background(
             Color.blue.opacity(0.1)
             .ignoresSafeArea()
         )
-        .navigationDestination(for: Screen.self, destination: {_ in
-            VStack {
-                Spacer()
-                MiniCardView(
-                    setName: setName
-                )
-                .padding(20)
-                Text("Congratulation!")
-                    .padding(5)
-                Text("あなただけの問題セットが作られました")
-                    .foregroundStyle(Color(red: 157/255, green: 157/255, blue: 157/255))
-                    .padding(5)
-                Spacer()
-                Button("ホームに戻る") {
-                    let len = path.count
-                    path.removeLast(len)
-                }
+         .navigationDestination(for: Screen.self, destination: {_ in
+             VStack {
+                 Spacer()
+                 MiniCardView(
+                     setName: setName
+                 )
+                 .padding(20)
+                 Text(String(localized: "addProblem.added.congratulaltion"))
+                     .padding(5)
+                 Text(String(localized: "addProblem.added.description"))
+                     .foregroundStyle(Color(red: 157/255, green: 157/255, blue: 157/255))
+                     .padding(5)
+                 Spacer()
+                 Button(String(localized: "button.toHome")) {
+                     let len = path.count
+                     path.removeLast(len)
+                 }
                 .padding(30)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

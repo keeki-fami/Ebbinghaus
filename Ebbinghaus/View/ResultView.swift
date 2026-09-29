@@ -21,11 +21,11 @@ struct ResultView: View {
                         .foregroundStyle(.white)
                         .font(.largeTitle.bold())
                         .padding()
-                    Text("お疲れ様でした")
+                    Text(String(localized: "result.text"))
                         .foregroundStyle(.white)
                 }
                 .frame(height: geometry.size.height/4)
-                Text("フィードバック")
+                Text(String(localized: "result.feedback.text"))
                     .foregroundStyle(.white)
                 TabView {
                     Tab("Account", systemImage: "earth") {
@@ -52,12 +52,12 @@ struct ResultView: View {
                         Button(action: {
                             shareOnTwitter()
                         }, label: {
-                            Text("Xで継続記録をシェア")
+                            Text(String(localized: "result.button.x"))
                                 .underline()
                                 .foregroundStyle(.white)
                         })
 
-                Button("< ホーム面に戻る") {
+                Button("< " + String(localized: "button.toHome")) {
                     let num = path.count
                     path.removeLast(num)
                 }
@@ -78,7 +78,11 @@ struct ResultView: View {
         .navigationBarBackButtonHidden(true)
     }
     func shareOnTwitter() {
-        let text = "\(resultViewData.nextPhase.rawValue - 1)回目の復習完了！\n\"\(resultViewData.problemSet)\"の復習をしました。\n\n \"EbbingHaus\"を使って忘却曲線に沿った復習をしよう！\n\n#EbbingHaus \n#忘却曲線 \n#復習"
+//        let text = "\(resultViewData.nextPhase.rawValue - 1)回目の復習完了！\n\"\(resultViewData.problemSet)\"の復習をしました。\n\n \"EbbingHaus\"を使って忘却曲線に沿った復習をしよう！\n\n#EbbingHaus \n#忘却曲線 \n#復習"
+        let text = String(
+            format: String(localized: "result.xPost"),
+            resultViewData.nextPhase.rawValue - 1,resultViewData.problemSet
+        )
         let encodedText = text.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
         
         if let encodedText = encodedText, let url = URL(string: "https://x.com/compose/post?text=\(encodedText)") {
@@ -98,17 +102,17 @@ struct ResultViewIncorrect: View {
                 Rectangle()
                     .fill(.clear)
                     .frame(height: 10)
-                Text("間違えた問題")
+                Text(String(localized: "result.feedback3.title"))
                     .font(.largeTitle.bold())
                 if let incorrectProblem = incorrectProblem {
-                    Text("現在、間違えた回数が最も多い問題です。次は正解しよう！")
+                    Text(String(localized: "result.feedback3.text"))
                         .padding()
                     VStack(alignment: .leading) {
-                        Text("問題 - \(incorrectProblem.problem)")
+                        Text(String(localized: "result.feedback3.problem") + " - \(incorrectProblem.problem)")
                             .padding(.bottom)
-                        Text("正答 - \(incorrectProblem.correctAnswer)")
+                        Text(String(localized: "result.feedback3.correctAnswer") + " - \(incorrectProblem.correctAnswer)")
                             .padding(.bottom)
-                        Text("あなたの回答 - \(incorrectProblem.answer)")
+                        Text(String(localized: "result.feedback3.yourAnswer") +  " - \(incorrectProblem.answer)")
                             .padding(.bottom)
                     }
                     .foregroundStyle(.black)
@@ -138,23 +142,23 @@ struct ResultViewIncorrect: View {
 }
 
 struct ResultViewCorrect: View {
-    let resultViewData: ResultViewData
-    var body: some View {
-        VStack {
-            Text("正答率")
-                .font(.largeTitle.bold())
-            
-            Text("\(resultViewData.correct*100 / (resultViewData.correct + resultViewData.incorrect))%")
-                .font(.largeTitle.bold())
-                .padding()
-            VStack {
-                Text("正解した問題数: \(resultViewData.correct)")
-                Text("間違えた問題数: \(resultViewData.incorrect)")
-            }
-        }
-        .foregroundStyle(.white)
-    }
-}
+     let resultViewData: ResultViewData
+     var body: some View {
+         VStack {
+             Text(String(localized: "result.feedback2.title1"))
+                 .font(.largeTitle.bold())
+             
+             Text("\(resultViewData.correct*100 / (resultViewData.correct + resultViewData.incorrect))%")
+                 .font(.largeTitle.bold())
+                 .padding()
+             VStack {
+                 Text(String(localized: "result.feedback2.correctText") + ": \(resultViewData.correct)")
+                 Text(String(localized: "result.feedback2.incorrectText") + ": \(resultViewData.incorrect)")
+             }
+         }
+         .foregroundStyle(.white)
+     }
+ }
 
 struct ResultViewNext: View {
     let resultViewData: ResultViewData
@@ -164,61 +168,66 @@ struct ResultViewNext: View {
         }
         let date = Date(timeIntervalSince1970: next)
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy/MM/dd"
+        formatter.dateFormat = String(localized: "result.feedback4.dateFormatter")
         return formatter.string(from: date)
     }
-    var body: some View {
-        if let date = nextDate {
-            VStack {
-                Text("次回の復習")
-                    .font(.title.bold())
-                Text("\(date)")
-                    .font(.largeTitle.bold())
-                    .padding()
-                Text("次も頑張りましょう！")
-            }
-            .foregroundStyle(.white)
-        }
-    }
+     var body: some View {
+         if let date = nextDate {
+             VStack {
+                 Text(String(localized: "result.feedback4.title"))
+                     .font(.title.bold())
+                 Text("\(date)")
+                     .font(.largeTitle.bold())
+                     .padding()
+                 Text(String(localized: "result.feedback4.text"))
+             }
+             .foregroundStyle(.white)
+         }
+     }
 }
 
 struct ResultViewCount: View {
-    let resultViewData: ResultViewData
-    var message: String {
-        if resultViewData.nextPhase.rawValue == 6 {
-            "5回にわたる復習完了！"
-        } else {
-            "継続は力なり！"
-        }
-    }
-    var body: some View {
-        VStack {
-            Text("\(resultViewData.nextPhase.rawValue-1)回目の復習")
-                .foregroundStyle(.white)
-                .font(.largeTitle.bold())
-            HStack {
-                ForEach(1..<6) { i in
-                    if i < resultViewData.nextPhase.rawValue {
-                        Image(systemName: "checkmark.circle.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .foregroundStyle(.green)
-                            .frame(width: 30, height: 30)
-                            .padding([.leading], 2)
-                    } else {
-                        Circle()
-                            .fill(resultViewData.nextPhase.rawValue >= i ? (resultViewData.nextPhase.rawValue == i ? .yellow : .green) : .gray)
-                            .frame(width: 30, height: 30)
-                        
-                    }
-                }
-            }
-            Text("継続は力なり！")
-                .foregroundStyle(.white)
-                .padding()
-        }
-    }
-}
+     let resultViewData: ResultViewData
+     var message: String {
+         if resultViewData.nextPhase.rawValue == 6 {
+             "5回にわたる復習完了！"
+         } else {
+             String(localized: "result.feedback1.text1")
+         }
+     }
+     var body: some View {
+         VStack {
+//             Text("\(resultViewData.nextPhase.rawValue-1)回目の復習")
+             Text(
+                String(
+                    format: String(localized: "result.feedback1.title"),
+                    resultViewData.nextPhase.rawValue-1)
+             )
+                 .foregroundStyle(.white)
+                 .font(.largeTitle.bold())
+             HStack {
+                 ForEach(1..<6) { i in
+                     if i < resultViewData.nextPhase.rawValue {
+                         Image(systemName: "checkmark.circle.fill")
+                             .resizable()
+                             .scaledToFit()
+                             .foregroundStyle(.green)
+                             .frame(width: 30, height: 30)
+                             .padding([.leading], 2)
+                     } else {
+                         Circle()
+                             .fill(resultViewData.nextPhase.rawValue >= i ? (resultViewData.nextPhase.rawValue == i ? .yellow : .green) : .gray)
+                             .frame(width: 30, height: 30)
+                         
+                     }
+                 }
+             }
+             Text(String(localized: "result.feedback1.text1"))
+                 .foregroundStyle(.white)
+                 .padding()
+         }
+     }
+ }
 
 
 #Preview {

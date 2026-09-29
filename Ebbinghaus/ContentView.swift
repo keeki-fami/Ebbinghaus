@@ -56,16 +56,16 @@ struct NothingToDoTodayView: View {
     let count: Int
     var body: some View {
         if count == 0 {
-            TitleView(text: "今日の問題集")
-            Text("1. 画面右下の「+」ボタンから、問題を追加しよう！")
+            TitleView(text: String(localized: "home.todayProblem.title1"))
+            Text(String(localized: "home.todayProblem.addDescription1"))
                 .foregroundStyle(.gray)
                 .font(.callout)
-            Text("2. 「今日の問題集」に表示される問題を解こう！")
+            Text(String(localized: "home.todayProblem.addDescription2"))
                 .foregroundStyle(.gray)
                 .font(.callout)
         } else {
             VStack {
-                TitleView(text: "今日の問題集")
+                TitleView(text: String(localized: "home.todayProblem.title1"))
                 Rectangle()
                     .fill(.clear)
                     .frame(height: 50)
@@ -74,9 +74,10 @@ struct NothingToDoTodayView: View {
                     .padding()
                 Spacer()
                 Group {
-                    Text("今日の問題は")
-                    Text("全て完了しました！")
+                    Text(String(localized: "home.todayProblem.completeTitle"))
+                        .multilineTextAlignment(.center)
                 }
+                .padding([.leading, .trailing])
                 .foregroundStyle(.black)
                 .font(.title2)
                 .fontWeight(.bold)
@@ -84,9 +85,8 @@ struct NothingToDoTodayView: View {
                     .fill(.clear)
                     .frame(height: 25)
                 Group {
-                    Text("素晴らしい！")
-                    Text("EbbingHausの忘却曲線に沿って、")
-                    Text("あなたの学習は着実に成果になっています。")
+                    Text(String(localized: "home.todayProblem.completeText"))
+                        .multilineTextAlignment(.center)
                 }
                 .fontWeight(.thin)
                 .font(.body)
@@ -133,7 +133,7 @@ struct ContentView: View {
                         NothingToDoTodayView(count: havetoDoProblemSet.count)
                     } else {
                         VStack {
-                            TitleView(text: "今日の問題集")
+                            TitleView(text: String(localized: "home.todayProblem.title1"))
                             VStack {
                                 ForEach(haveToDo, id: \.id) { set in
                                     Button(action: {
@@ -149,7 +149,7 @@ struct ContentView: View {
                                         )
                                     })
                                     .contextMenu {
-                                        Button("削除", role: .destructive) {
+                                        Button(String(localized: "button.delete"), role: .destructive) {
                                             if let idx = havetoDoProblemSet.firstIndex(of: set) {
                                                 var element = havetoDoProblemSet[idx]
                                                 withAnimation {
@@ -168,7 +168,7 @@ struct ContentView: View {
                         
                     }
                     
-                    TitleView(text: "その他")
+                    TitleView(text: String(localized: "home.others.title1"))
                     Button(action: {
                         let content = OtherViewType.willDo
                         path.append(content)

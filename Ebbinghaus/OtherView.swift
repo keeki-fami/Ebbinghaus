@@ -41,23 +41,23 @@ struct OtherView: View {
         self.viewType = viewType
         self._path = path
         if viewType == .willDo {
-            _problemSet = Query(filter: #Predicate<ProblemSet> { item in
-                item.notifyDate - date > 60*60*24.0
-            })
-            overlayColor = Color(red: 119/255, green: 192/255, blue: 255/255)
-            backgroundColor = Color(red: 218/255, green: 237/255, blue: 255/255)
-            title = "期限前の問題"
-            description = "明日以降に復習すると良い問題集です。"
-            
-        } else {
-            _problemSet = Query(filter: #Predicate<ProblemSet>{ item in
-                item.notifyDate - date <= 0
-            })
-            overlayColor = Color(red: 172/255, green: 31/255, blue: 33/255)
-            backgroundColor = Color(red: 255/255, green: 218/255, blue: 228/255)
-            title = "期限切れの問題"
-            description = "良い復習の機会を逃してしまった問題集です。まだ間に合います！"
-        }
+             _problemSet = Query(filter: #Predicate<ProblemSet> { item in
+                 item.notifyDate - date > 60*60*24.0
+             })
+             overlayColor = Color(red: 119/255, green: 192/255, blue: 255/255)
+             backgroundColor = Color(red: 218/255, green: 237/255, blue: 255/255)
+             title = String(localized: "others.beforeNotify.title")
+             description = String(localized: "others.beforeNotify.text")
+             
+         } else {
+             _problemSet = Query(filter: #Predicate<ProblemSet>{ item in
+                 item.notifyDate - date <= 0
+             })
+             overlayColor = Color(red: 172/255, green: 31/255, blue: 33/255)
+             backgroundColor = Color(red: 255/255, green: 218/255, blue: 228/255)
+             title = String(localized: "others.expired.title")
+             description = String(localized: "others.expired.text")
+         }
         
     }
     
@@ -69,7 +69,7 @@ struct OtherView: View {
             
             if problemSet.isEmpty {
                 VStack {
-                    Text("問題集はありません。")
+                    Text(String(localized: "others.nothing"))
                 }
                 .frame(height: 300)
             } else {
@@ -90,7 +90,7 @@ struct OtherView: View {
                         )
                     })
                     .contextMenu {
-                        Button("削除", role: .destructive) {
+                        Button(String(localized: "button.delete"), role: .destructive) {
                             if let idx = problemSet.firstIndex(of: card) {
                                 let element = problemSet[idx]
                                 withAnimation {
@@ -126,11 +126,11 @@ struct OtherView: View {
             }
             
         }
-        .alert("注意" , isPresented: $alert) {
-            Button("キャンセル") {
+        .alert(String(localized: "button.caution") , isPresented: $alert) {
+            Button(String(localized: "button.cancel")) {
                 
             }
-            Button("始める") {
+            Button(String(localized: "button.start")) {
                  UserDefaults.standard.set(false, forKey: "isUpdateStatus")
                 if let problem = problem {
                     path.append(problem)
@@ -138,7 +138,7 @@ struct OtherView: View {
                 print("path: \(path)")
             }
         } message: {
-            Text("今回はphaseが更新されません")
+            Text(String(localized: "alert.notUpdate"))
         }
     }
 }

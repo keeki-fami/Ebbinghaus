@@ -51,7 +51,11 @@ struct CardView: View {
                     }
                     Spacer()
                     HStack {
-                        Text("\(restday)日 \(resthour)時間後")
+                        Text(String(
+                            format: String(localized: "card.timeFormat"),
+                            restday, resthour)
+                        )
+//                        Text("\(restday)日 \(resthour)時間後")
                             .foregroundStyle(.white)
 //                            .fontWeight(.default)
                         Spacer()
@@ -141,10 +145,11 @@ struct WillSolveCardView: View {
                 VStack{
                     CardStackingView()
                         .padding()
-                    Text("通知前の問題")
+                    Text(String(localized: "home.others.card.beforeNotify.title"))
                         .font(.title3)
-                    Text("今日以降、復習すると良い問題です。")
-//                        .fontWeight(.thin)
+                    Text(String(localized: "home.others.card.beforeNotify.text"))
+// //                        .fontWeight(.thin)
+                        .padding([.leading, .trailing])
                         .font(.caption)
                 }
                 .foregroundStyle(.white)
@@ -162,10 +167,10 @@ struct HaveToSolveCardView: View {
                 VStack{
                     Text("⚠️")
                         .font(.largeTitle)
-                    Text("期限後の問題")
+                    Text(String(localized: "home.others.card.expired.title"))
                         .font(.title3)
-                    Text("期限が過ぎた問題です。すぐに復習しましょう！")
-//                        .fontWeight(.thin)
+                    Text(String(localized: "home.others.card.expired.text"))
+                        .padding([.leading, .trailing])
                         .font(.caption)
                 }
                 .foregroundStyle(.white)

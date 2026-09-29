@@ -68,48 +68,48 @@ struct ProblemCreatingView: View {
     
     var body: some View {
 //        NavigationStack {
-        VStack {
-            ScrollView {
-                Text("問題の作成をしてください。")
-                    .fontWeight(.medium)
-                VStack {
-                    HStack {
-                        Text("問題")
-                            .font(.largeTitle)
-                            .fontWeight(.medium)
-                        Spacer()
-                    }
-                    HStack {
-                        TextField("問題の内容を入力してください。", text: $problem, axis: .vertical)
+         VStack {
+             ScrollView {
+                 Text(String(localized: "addProblem.step1.creatingProblem.description"))
+                     .fontWeight(.medium)
+                 VStack {
+                     HStack {
+                         Text(String(localized: "addProblem.step1.creatingProblem.title1"))
+                             .font(.largeTitle)
+                             .fontWeight(.medium)
+                         Spacer()
+                     }
+                     HStack {
+                         TextField(String(localized: "addProblem.step1.creatingProblem.textField1"), text: $problem, axis: .vertical)
                             .textFieldStyle(.plain)
                             .focused($focus, equals: .problem)
                         Spacer()
                     }
                 }
-                .padding()
-                VStack {
-                    HStack {
-                        Text("解答")
-                            .font(.largeTitle)
-                            .fontWeight(.medium)
-                        Spacer()
-                    }
-                    HStack {
-                        TextField("解答例を入力してください。", text: $answer, axis: .vertical)
+                 .padding()
+                 VStack {
+                     HStack {
+                         Text(String(localized: "addProblem.step1.creatingProblem.title2"))
+                             .font(.largeTitle)
+                             .fontWeight(.medium)
+                         Spacer()
+                     }
+                     HStack {
+                         TextField(String(localized: "addProblem.step1.creatingProblem.textField2"), text: $answer, axis: .vertical)
                             .textFieldStyle(.plain)
                             .focused($focus, equals: .answer)
                         Spacer()
                     }
                 }
                 .padding()
-                VStack {
-                    HStack {
-                        Toggle("", isOn: $isKeyword)
-                            .labelsHidden()
-                        Text("正解判定に、キーワードを使用する")
-                        Spacer()
-                    }
-                    Text("上のボタンがOFFの場合は、答えと同じ回答のみ正解にします。上のボタンがONの場合は、解答に、指定したキーワードがすべて含まれていた場合に正解にします。")
+                 VStack {
+                     HStack {
+                         Toggle("", isOn: $isKeyword)
+                             .labelsHidden()
+                         Text(String(localized: "addProblem.step1.creatingProblem.toggle"))
+                         Spacer()
+                     }
+                     Text(String(localized: "addProblem.step1.creatingProblem.toggle.description"))
 //                        .font(.custom("", size: 20))
                         .foregroundStyle(.gray)
                         .font(.caption)
@@ -119,10 +119,10 @@ struct ProblemCreatingView: View {
                     VStack {
                         HStack {
                             VStack(alignment: .leading) {
-                                Text("キーワード")
+                                Text(String(localized: "addProblem.step1.creatingProblem.keyword.title"))
                                     .font(.largeTitle)
                                     .fontWeight(.medium)
-                                Text("解答に含める単語を入力してください。")
+                                Text(String(localized: "addProblem.step1.creatingProblem.keyword.description"))
                             }
                             Spacer()
                         }
@@ -140,7 +140,10 @@ struct ProblemCreatingView: View {
                                                 .foregroundStyle(.white)
                                         }
                                 })
-                                TextField("キーワード\(idx+1)", text: $keyword[idx].text, axis: .vertical)
+                                TextField(String(
+                                    format: String(localized: "addProblem.step1.creatingProblem.keyword.textField"),
+                                    idx + 1
+                                ), text: $keyword[idx].text, axis: .vertical)
                                     .textFieldStyle(.plain)
                                     .focused($focus, equals: .keyword)
                                 Spacer()
@@ -227,10 +230,10 @@ struct ProblemCreatingView: View {
                     .frame(maxWidth: 350,  maxHeight: 50)
                     .padding()
                     .overlay() {
-                        Text(!(problem.isEmpty || answer.isEmpty) && focus == nil ? "追加" : "決定")
-                            .fontWeight(.medium)
-                            .foregroundStyle(!(problem.isEmpty || answer.isEmpty) && focus == nil ? .white : .black)
-                    }
+                         Text(!(problem.isEmpty || answer.isEmpty) && focus == nil ? String(localized: "button.add") : String(localized: "button.determine"))
+                             .fontWeight(.medium)
+                             .foregroundStyle(!(problem.isEmpty || answer.isEmpty) && focus == nil ? .white : .black)
+                     }
             })
         }
         .background(

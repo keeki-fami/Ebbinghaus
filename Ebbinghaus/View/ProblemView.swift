@@ -42,9 +42,9 @@ struct ProblemView: View {
                     Group {
                         if problemSet.problem.count > 0 {
                             ScrollView {
-                                Text("\(problemSet.problem[nowProblem].problem)")
-                                Text(problemSet.problem[nowProblem].problemType == .wordProblem ? "記述問題" : "一問一答")
-                                    .fontWeight(.thin)
+                                 Text("\(problemSet.problem[nowProblem].problem)")
+                                 Text(problemSet.problem[nowProblem].problemType == .wordProblem ? String(localized: "solving.wordProblem") : String(localized: "solving.oneOnOne"))
+                                     .fontWeight(.thin)
                                 
                                 TextField("回答を入力", text: $inputText, axis: .vertical)
                                     .textFieldStyle(textFields())
@@ -54,21 +54,21 @@ struct ProblemView: View {
                                 //                                .padding()
                                 
                                 if nowSolvePhase == .solved {
-                                    if isSuccess {
-                                        Text("🥳正解!")
-                                            .font(Font.largeTitle.bold())
-                                            .foregroundStyle(.green)
-                                            .fontWeight(.bold)
-                                    } else {
-                                        Text("😱不正解...")
-                                            .font(Font.largeTitle.bold())
-                                            .foregroundStyle(.gray)
-                                            .fontWeight(.bold)
-                                    }
-                                    VStack {
-                                        Text("答え")
-                                            .foregroundStyle(.gray)
-                                            .fontWeight(.medium)
+                                     if isSuccess {
+                                         Text(String(localized: "solving.correct"))
+                                             .font(Font.largeTitle.bold())
+                                             .foregroundStyle(.green)
+                                             .fontWeight(.bold)
+                                     } else {
+                                         Text(String(localized: "solving.incorrect"))
+                                             .font(Font.largeTitle.bold())
+                                             .foregroundStyle(.gray)
+                                             .fontWeight(.bold)
+                                     }
+                                     VStack {
+                                         Text(String(localized: "solving.answerLabel"))
+                                             .foregroundStyle(.gray)
+                                             .fontWeight(.medium)
                                         Text("\(problemSet.problem[nowProblem].answer)")
                                             .padding()
                                     }
@@ -113,12 +113,12 @@ struct ProblemView: View {
                             .frame(width: 300, height: 50)
                             .shadow(color: .black.opacity(0.25), radius: 10)
                             .overlay() {
-                                if nowSolvePhase == .solved {
-                                    Text("次へ")
-                                } else {
-                                    Text(focus == nil ? "解答" : "OK")
-                                }
-                            }
+                                 if nowSolvePhase == .solved {
+                                     Text(String(localized: "button.next"))
+                                 } else {
+                                     Text(focus == nil ? String(localized: "button.solve") : "OK")
+                                 }
+                             }
                             .padding()
                     })
                 }
