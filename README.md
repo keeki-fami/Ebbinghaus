@@ -1,6 +1,6 @@
 <h1 align="center"> EbbingHaus </h1> <br>
 <p align = "center">
-	<img alt="EbbingHaus" src="./images/ebbinghaus_icon.png" title="EbbingHaus" width="400">
+	<img alt="EbbingHaus" src="./images/ebbinghaus_icon.png" title="EbbingHaus" width="200">
 </p>
 
 <p align="center">
