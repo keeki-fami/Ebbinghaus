@@ -8,6 +8,9 @@ Learn smarter. Remember longer.
 </p>
 
 ## Overview
+<p align = "center">
+	<img alt="EbbingHaus" src="./images/ebbinghaus_slide.png" title="EbbingHaus" width="600">
+</p>
 Review your study materials at the right time, track your learning progress, and build lasting memories.Ebbinghaus helps you study smarter with spaced repetition.
 
 ## Link
