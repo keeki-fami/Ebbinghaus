@@ -44,9 +44,17 @@ struct ProblemView: View {
                     Group {
                         if problemSet.problem!.count > 0 {
                             ScrollView {
-                                Text("\(problemSet.problem?[nowProblem].problem)")
-                                Text(problemSet.problem?[nowProblem].problemType == .wordProblem ? String(localized: "solving.wordProblem") : String(localized: "solving.oneOnOne"))
-                                     .fontWeight(.thin)
+                                if let problem = problemSet.problem {
+                                    Text("\(problem[nowProblem].problem)")
+                                } else {
+                                    Text("")
+                                }
+                                if let problem = problemSet.problem {
+                                    Text(problem[nowProblem].problemType == .wordProblem ? String(localized: "solving.wordProblem") : String(localized: "solving.oneOnOne"))
+                                         .fontWeight(.thin)
+                                } else {
+                                    Text("")
+                                }
                                 
                                 TextField(String(localized: "solving.textField"), text: $inputText, axis: .vertical)
                                     .textFieldStyle(textFields())
@@ -71,8 +79,13 @@ struct ProblemView: View {
                                          Text(String(localized: "solving.answerLabel"))
                                              .foregroundStyle(.gray)
                                              .fontWeight(.medium)
-                                        Text("\(problemSet.problem?[nowProblem].answer)")
-                                            .padding()
+                                         if let problem = problemSet.problem {
+                                             Text("\(problem[nowProblem].answer)")
+                                                 .padding()
+                                         } else {
+                                             Text("")
+                                                 .padding()
+                                         }
                                     }
                                     .padding()
                                     .frame(width: geometry.size.width*0.8)
@@ -82,22 +95,24 @@ struct ProblemView: View {
                                         RoundedRectangle(cornerRadius: 10)
                                             .stroke(.blue, lineWidth: 1)
                                     }
-                                    if problemSet.problem?[nowProblem].problemType == .wordProblem {
-                                         LazyVStack {
-                                             Text(String(localized: "solving.keywordCheck"))
-                                                 .fontWeight(.medium)
-                                                 .padding()
-                                             if let problem = problemSet.problem {
-                                                 ForEach(problem[nowProblem].keyword, id: \.self) { keyword in
-                                                    if let check = checkList[keyword], !check {
-                                                        Text("\(keyword) : ❌")
-                                                    } else {
-                                                        Text("\(keyword) : ✅")
+                                    if let problem = problemSet.problem {
+                                        if problem[nowProblem].problemType == .wordProblem {
+                                            LazyVStack {
+                                                Text(String(localized: "solving.keywordCheck"))
+                                                    .fontWeight(.medium)
+                                                    .padding()
+                                                if let problem = problemSet.problem {
+                                                    ForEach(problem[nowProblem].keyword, id: \.self) { keyword in
+                                                        if let check = checkList[keyword], !check {
+                                                            Text("\(keyword) : ❌")
+                                                        } else {
+                                                            Text("\(keyword) : ✅")
+                                                        }
                                                     }
+                                                } else {
+                                                    
                                                 }
-                                             } else {
-                                                 
-                                             }
+                                            }
                                         }
                                     }
                                 }
