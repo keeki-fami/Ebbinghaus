@@ -32,6 +32,19 @@ open Ebbinghaus.xcodeproj
 ## Requirement
 - iOS: 18.0+
 
+## Tech Stack
+#### Development
+- Language: Swift
+- UI Framework: SwiftUI
+- Data Persistence: SwiftData
+- Cloud Sync: iCloud / CloudKit
+- Notifications: UserNotifications
+#### Design
+- UI Design: Figma
+#### Content
+- Strings: Google Docs
+
+
 ## Contribution
 Contributions are welcome! If you would like to contribute, please feel free to contact me by email. I will grant you access to the necessary resources, such as Google Docs, Figma, and other tools.
 
