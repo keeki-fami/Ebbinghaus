@@ -81,7 +81,7 @@ struct ResultView: View {
 //        let text = "\(resultViewData.nextPhase.rawValue - 1)回目の復習完了！\n\"\(resultViewData.problemSet)\"の復習をしました。\n\n \"EbbingHaus\"を使って忘却曲線に沿った復習をしよう！\n\n#EbbingHaus \n#忘却曲線 \n#復習"
         let text = String(
             format: String(localized: "result.xPost"),
-            resultViewData.nextPhase.rawValue - 1,resultViewData.problemSet
+            resultViewData.nextPhase.rawValue - 1, resultViewData.problemSet
         )
         let encodedText = text.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
         
@@ -129,8 +129,8 @@ struct ResultViewIncorrect: View {
                         Text("🎉")
                             .font(.title)
                             .padding()
-                        Text("間違えた問題はありませんでした。")
-                        Text("素晴らしい！")
+                        Text(String(localized: "result.noMiss"))
+                        Text(String(localized: "result.great"))
                     }
                     .padding()
                 }
@@ -189,12 +189,12 @@ struct ResultViewNext: View {
 struct ResultViewCount: View {
      let resultViewData: ResultViewData
      var message: String {
-         if resultViewData.nextPhase.rawValue == 6 {
-             "5回にわたる復習完了！"
-         } else {
-             String(localized: "result.feedback1.text1")
-         }
-     }
+          if resultViewData.nextPhase.rawValue == 6 {
+              String(localized: "result.feedback2.5times")
+          } else {
+              String(localized: "result.feedback1.text1")
+          }
+      }
      var body: some View {
          VStack {
 //             Text("\(resultViewData.nextPhase.rawValue-1)回目の復習")

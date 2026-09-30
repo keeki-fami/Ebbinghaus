@@ -50,10 +50,10 @@ struct AddProblemSetView: View {
                      }
                  }
             Spacer()
-             Text(nowPhase == .phase2 ? String(localized: "addProblem.step2.description") : nowPhase == .phase1 ? String(localized: "addProblem.step1.creatingProblem.description") : "nil")
-                 .fontWeight(.medium)
-             Spacer()
-             // 問題セット名
+            Text(nowPhase == .phase2 ? String(localized: "addProblem.step2.description") : nowPhase == .phase1 ? String(localized: "addProblem.step1.creatingProblem.description") : "nil")
+                .fontWeight(.medium)
+            Spacer()
+            // 問題セット名
              if nowPhase == .phase2 {
                  TextField(String(localized: "addProblem.step2.textField"), text: $setName)
                     .font(.largeTitle)
@@ -77,7 +77,7 @@ struct AddProblemSetView: View {
                                     answer: problem.answer
                                 )
                                 .contextMenu {
-                                    Button("削除", role: .destructive) {
+                                    Button(String(localized: "button.delete"), role: .destructive) {
                                         if let idx = problemCreatingViewModel.problems.firstIndex(of: problem) {
                                             withAnimation {
                                                 problemCreatingViewModel.problems.remove(at: idx)
@@ -199,10 +199,10 @@ struct AddProblemSetView: View {
         .onAppear {
             focus = .setName
         }
-        .alert("エラー", isPresented: $isAlert, actions: {
+        .alert(String(localized: "addProblem.step1.error.title"), isPresented: $isAlert, actions: {
             Button("OK") {}
         }, message: {
-            Text("問題は一つ以上追加してください。")
+            Text(String(localized: "addProblem.step1.error.descriptionSetEmpty"))
         })
 //        .toolbar {
 //#if os(macOS)

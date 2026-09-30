@@ -46,7 +46,7 @@ struct ProblemView: View {
                                  Text(problemSet.problem[nowProblem].problemType == .wordProblem ? String(localized: "solving.wordProblem") : String(localized: "solving.oneOnOne"))
                                      .fontWeight(.thin)
                                 
-                                TextField("回答を入力", text: $inputText, axis: .vertical)
+                                TextField(String(localized: "solving.textField"), text: $inputText, axis: .vertical)
                                     .textFieldStyle(textFields())
                                     .lineLimit(5...10)
                                     .focused($focus, equals: .textEd)
@@ -81,10 +81,10 @@ struct ProblemView: View {
                                             .stroke(.blue, lineWidth: 1)
                                     }
                                     if problemSet.problem[nowProblem].problemType == .wordProblem {
-                                        LazyVStack {
-                                            Text("キーワードチェック")
-                                                .fontWeight(.medium)
-                                                .padding()
+                                         LazyVStack {
+                                             Text(String(localized: "solving.keywordCheck"))
+                                                 .fontWeight(.medium)
+                                                 .padding()
                                             ForEach(problemSet.problem[nowProblem].keyword, id: \.self) { keyword in
                                                 if let check = checkList[keyword], !check {
                                                     Text("\(keyword) : ❌")

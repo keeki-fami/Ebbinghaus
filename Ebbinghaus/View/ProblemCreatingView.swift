@@ -122,7 +122,7 @@ struct ProblemCreatingView: View {
                                 Text(String(localized: "addProblem.step1.creatingProblem.keyword.title"))
                                     .font(.largeTitle)
                                     .fontWeight(.medium)
-                                Text(String(localized: "addProblem.step1.creatingProblem.keyword.description"))
+//                                Text(String(localized: ""))
                             }
                             Spacer()
                         }
@@ -240,10 +240,10 @@ struct ProblemCreatingView: View {
             Color.blue.opacity(0.1)
                 .ignoresSafeArea()
         )
-        .alert("エラー", isPresented: $isAlert, actions: {
+        .alert(String(localized: "addProblem.step1.error.title"), isPresented: $isAlert, actions: {
             Button("OK") {}
         }, message: {
-            Text(isKeyword ? "問題, 回答, キーワードを全て埋めてください" : "問題, 解答を全て埋めてください。")
+            Text(isKeyword ? String(localized: "addProblem.step1.error.descriptionWithKeyword") : String(localized: "addProblem.step1.error.description"))
         })
     }
 }
@@ -252,4 +252,3 @@ struct ProblemCreatingView: View {
     @Previewable @State var problemCreatingViewModel = ProblemCreatingViewModel()
     ProblemCreatingView(problemCreatingViewModel: $problemCreatingViewModel)
 }
-
