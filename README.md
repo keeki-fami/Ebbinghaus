@@ -10,6 +10,9 @@ Learn smarter. Remember longer.
 ## Overview
 Review your study materials at the right time, track your learning progress, and build lasting memories.Ebbinghaus helps you study smarter with spaced repetition.
 
+## Link
+- [youtube (ja)](https://youtu.be/L-pt-yIxET8?si=zGZncSa2mWRw9FnT)
+
 ## Features
 - 📚 **Ebbinghaus Forgetting Curve** — Manage your reviews based on the Ebbinghaus forgetting curve.
 - 🔔 **Smart Review Reminders** — Get notified when it's time to review.
