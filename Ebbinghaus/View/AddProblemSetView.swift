@@ -7,6 +7,7 @@
 import SwiftUI
 import SwiftData
 import ConfettiSwiftUI
+import WidgetKit
 
 struct AddProblemSetView: View {
     
@@ -131,7 +132,7 @@ struct AddProblemSetView: View {
                         let problemset = ProblemSet(setName: setName, problem: problemCreatingViewModel.problems, notifyDate: pushedDate.timeIntervalSince1970 + 60*60*24-10, status: .phase1)
                         
                         modelContext.insert(problemset)
-                        problemset.problem.forEach {
+                        problemset.problem!.forEach {
                             $0.problemSet = problemset
                         }
                         
@@ -187,6 +188,7 @@ struct AddProblemSetView: View {
             .confettiCannon(trigger: $createdAppear)
             .onAppear() {
                 createdAppear = true
+                WidgetCenter.shared.reloadAllTimelines()
             }
             
         })
