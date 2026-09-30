@@ -32,6 +32,9 @@ open Ebbinghaus.xcodeproj
 ## Requirement
 - iOS: 18.0+
 
+## Contribution
+Contributions are welcome! If you would like to contribute, please feel free to contact me by email. I will grant you access to the necessary resources, such as Google Docs, Figma, and other tools.
+
 ## Feedback
 Feedback is always welcome! Feel free to reach out to me by email or on X.
 - Email : keekiapp.feedback@gmail.com
