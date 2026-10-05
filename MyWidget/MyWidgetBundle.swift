@@ -14,6 +14,7 @@ struct MyWidgetBundle: WidgetBundle {
     var body: some Widget {
         MyWidget()
         MyWidgetControl()
-        MyWidgetLiveActivity()
+//        MyWidgetLiveActivity()
     }
 }
+

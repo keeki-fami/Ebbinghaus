@@ -47,6 +47,7 @@ open Ebbinghaus.xcodeproj
 - Notifications: UserNotifications
 #### Design
 - UI Design: Figma
+    - link: https://www.figma.com/design/0wZU4sjyoEBdixs2Iph6UR/EbbingHaus?node-id=0-1&t=8u6KYTdwdVGgsved-1
 #### Content
 - Strings: Google Docs
 

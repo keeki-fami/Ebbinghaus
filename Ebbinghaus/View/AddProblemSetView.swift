@@ -189,11 +189,25 @@ struct AddProblemSetView: View {
             .onAppear() {
                 createdAppear = true
                 WidgetCenter.shared.reloadAllTimelines()
+                
+                // 通知の追加
+                let notificationContent = UNMutableNotificationContent()
+                notificationContent.title = "Ebbinghaus"
+                print("\(setName) | 1回目の復習をしましょう！")
+                notificationContent.body = "\(setName) | 1回目の復習をしましょう！"
+                let time = generateTrigger(phase: .phase1)
+                print("\(time)秒後")
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: time, repeats: false)
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: notificationContent, trigger: trigger)
+                UNUserNotificationCenter.current().add(request) {error in
+                    if let error = error {
+                        print("error is occured: \(error.localizedDescription)")
+                    }
+                }
+                
             }
             
         })
-        
-        //            .frame(maxWidth: .infinity, maxHeight: .infinity)
         .contentShape(Rectangle())
         .onTapGesture {
             focus = nil
@@ -206,37 +220,6 @@ struct AddProblemSetView: View {
         }, message: {
             Text(String(localized: "addProblem.step1.error.descriptionSetEmpty"))
         })
-//        .toolbar {
-//#if os(macOS)
-//            ToolbarItem(
-//                placement: .automatic,
-//                content: {
-//                    if nowPhase == .phase2 || nowPhase == .phase1 {
-//                        Button("戻る") {
-//                            if nowPhase == .phase2 {
-//                                nowPhase = .phase1
-//                            } else {
-//                                dismiss()
-//                            }
-//                        }
-//                    }
-//                })
-//#else
-//            ToolbarItem(
-//                placement: .topBarLeading,
-//                content: {
-//                    if nowPhase == .phase2 || nowPhase == .phase1 {
-//                        Button("戻る") {
-//                            if nowPhase == .phase2 {
-//                                nowPhase = .phase1
-//                            } else {
-//                                dismiss()
-//                            }
-//                        }
-//                    }
-//                })
-//#endif
-//        }
         
     }
 }

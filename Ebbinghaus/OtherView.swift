@@ -42,7 +42,7 @@ struct OtherView: View {
         self._path = path
         if viewType == .willDo {
              _problemSet = Query(filter: #Predicate<ProblemSet> { item in
-                 item.notifyDate - date > 60*60*24.0
+                 item.notifyDate - date > 0
              })
              overlayColor = Color(red: 119/255, green: 192/255, blue: 255/255)
              backgroundColor = Color(red: 218/255, green: 237/255, blue: 255/255)
@@ -51,7 +51,7 @@ struct OtherView: View {
              
          } else {
              _problemSet = Query(filter: #Predicate<ProblemSet>{ item in
-                 item.notifyDate - date <= 0
+                 item.notifyDate - date <= -1*60*60*24.0
              })
              overlayColor = Color(red: 172/255, green: 31/255, blue: 33/255)
              backgroundColor = Color(red: 255/255, green: 218/255, blue: 228/255)

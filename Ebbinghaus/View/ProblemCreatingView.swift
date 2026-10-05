@@ -110,7 +110,6 @@ struct ProblemCreatingView: View {
                          Spacer()
                      }
                      Text(String(localized: "addProblem.step1.creatingProblem.toggle.description"))
-//                        .font(.custom("", size: 20))
                         .foregroundStyle(.gray)
                         .font(.caption)
                 }
@@ -122,7 +121,6 @@ struct ProblemCreatingView: View {
                                 Text(String(localized: "addProblem.step1.creatingProblem.keyword.title"))
                                     .font(.largeTitle)
                                     .fontWeight(.medium)
-//                                Text(String(localized: ""))
                             }
                             Spacer()
                         }

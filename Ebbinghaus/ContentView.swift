@@ -42,11 +42,31 @@ struct ResultViewData: Hashable {
 
 struct TitleView: View {
     let text: String
+    var description: String?
     var textColor:Color = .black
     var body: some View {
         HStack {
+            VStack(alignment: .leading) {
+                Text(text)
+                    .font(Font.title.bold())
+                if let description = description {
+                    Text(description)
+                        .foregroundStyle(.gray)
+                        .font(.caption)
+                }
+            }
+            Spacer()
+        }
+        .padding()
+    }
+}
+
+struct DescriptionView: View {
+    let text: String
+    var textColor: Color = .gray
+    var body: some View {
+        HStack {
             Text(text)
-                .font(Font.title.bold())
                 .padding()
             Spacer()
         }
@@ -56,44 +76,45 @@ struct TitleView: View {
 struct NothingToDoTodayView: View {
     let count: Int
     var body: some View {
-        if count == 0 {
+//        if count == 0 {
             TitleView(text: String(localized: "home.todayProblem.title1"))
+            
             Text(String(localized: "home.todayProblem.addDescription1"))
                 .foregroundStyle(.gray)
                 .font(.callout)
             Text(String(localized: "home.todayProblem.addDescription2"))
                 .foregroundStyle(.gray)
                 .font(.callout)
-        } else {
-            VStack {
-                TitleView(text: String(localized: "home.todayProblem.title1"))
-                Rectangle()
-                    .fill(.clear)
-                    .frame(height: 50)
-                Text("🎉")
-                    .font(.largeTitle)
-                    .padding()
-                Spacer()
-                Group {
-                    Text(String(localized: "home.todayProblem.completeTitle"))
-                        .multilineTextAlignment(.center)
-                }
-                .padding([.leading, .trailing])
-                .foregroundStyle(.black)
-                .font(.title2)
-                .fontWeight(.bold)
-                Rectangle()
-                    .fill(.clear)
-                    .frame(height: 25)
-                Group {
-                    Text(String(localized: "home.todayProblem.completeText"))
-                        .multilineTextAlignment(.center)
-                }
-                .fontWeight(.thin)
-                .font(.body)
-                .foregroundStyle(.black)
-            }
-        }
+//        } else {
+//            VStack {
+//                TitleView(text: String(localized: "home.todayProblem.title1"))
+//                Rectangle()
+//                    .fill(.clear)
+//                    .frame(height: 50)
+//                Text("🎉")
+//                    .font(.largeTitle)
+//                    .padding()
+//                Spacer()
+//                Group {
+//                    Text(String(localized: "home.todayProblem.completeTitle"))
+//                        .multilineTextAlignment(.center)
+//                }
+//                .padding([.leading, .trailing])
+//                .foregroundStyle(.black)
+//                .font(.title2)
+//                .fontWeight(.bold)
+//                Rectangle()
+//                    .fill(.clear)
+//                    .frame(height: 25)
+//                Group {
+//                    Text(String(localized: "home.todayProblem.completeText"))
+//                        .multilineTextAlignment(.center)
+//                }
+//                .fontWeight(.thin)
+//                .font(.body)
+//                .foregroundStyle(.black)
+//            }
+//        }
     }
 }
 
@@ -113,16 +134,12 @@ struct ContentView: View {
     @State var date = Date().timeIntervalSince1970
     var haveToDo: [ProblemSet] {
         return havetoDoProblemSet.filter{
-            $0.notifyDate - date > 0 &&
-            $0.notifyDate - date <= 60*60*24.0
+            $0.notifyDate - date > -1*60*60*24.0 &&
+            $0.notifyDate - date <= 0
         }
     }
     
-    init() {
-//        _havetoDoProblemSet = Query(filter: #Predicate<ProblemSet> { item in
-//            (0.0 < item.notifyDate - date) && ( item.notifyDate - date <= 60*60*24.0 )
-//        })
-    }
+    init() { }
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -135,7 +152,11 @@ struct ContentView: View {
                         NothingToDoTodayView(count: havetoDoProblemSet.count)
                     } else {
                         VStack {
-                            TitleView(text: String(localized: "home.todayProblem.title1"))
+                            TitleView(
+                                text: String(localized: "home.todayProblem.title1"),
+                                description: "通知から1日を過ぎた問題集は、「期限を過ぎたもの」に移動します。"
+                                
+                            )
                             VStack {
                                 ForEach(haveToDo, id: \.id) { set in
                                     Button(action: {
@@ -196,7 +217,6 @@ struct ContentView: View {
                     allProblem.forEach{print("\($0.setName) - \($0.notifyDate - date)")}
                 }
             }
-//            .ignoresSafeArea()
             .background(
                 Color.blue.opacity(0.1)
                 .ignoresSafeArea()

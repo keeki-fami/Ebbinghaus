@@ -34,19 +34,6 @@ struct ProblemCardView: View {
                 Text(">")
                     .padding()
                     .frame(maxWidth :50, maxHeight: .infinity)
-//                    .background(
-//                        LinearGradient(
-//                            colors: [
-//                                .clear,
-//                                Color(
-//                                    red: 237/255,
-//                                    green: 240/255,
-//                                    blue: 241/255
-//                                )],
-//                            startPoint: .leading,
-//                            endPoint: .trailing
-//                        )
-//                    )
             }
     }
 }

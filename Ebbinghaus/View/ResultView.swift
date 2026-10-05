@@ -78,7 +78,6 @@ struct ResultView: View {
         .navigationBarBackButtonHidden(true)
     }
     func shareOnTwitter() {
-//        let text = "\(resultViewData.nextPhase.rawValue - 1)回目の復習完了！\n\"\(resultViewData.problemSet)\"の復習をしました。\n\n \"EbbingHaus\"を使って忘却曲線に沿った復習をしよう！\n\n#EbbingHaus \n#忘却曲線 \n#復習"
         let text = String(
             format: String(localized: "result.xPost"),
             resultViewData.nextPhase.rawValue - 1, resultViewData.problemSet

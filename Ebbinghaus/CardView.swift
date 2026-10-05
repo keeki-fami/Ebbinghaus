@@ -17,12 +17,43 @@ struct CardView: View {
         return getCardColorSet(viewType: viewType)
     }
     
+    enum CardState {
+        case beforeNotification
+        case inNotification
+        case expired
+    }
+    
+    var state: CardState {
+        if rest-date.timeIntervalSince1970 >= 0 {
+            return .beforeNotification
+        } else if rest-date.timeIntervalSince1970 > -1*60*60*24.0 {
+            return .inNotification
+        } else {
+            return .expired
+        }
+    }
     var restday: Int {
-        return Int((rest - date.timeIntervalSince1970)/(60*60*24))
+        let time = rest - date.timeIntervalSince1970
+        if state == .beforeNotification {
+            return Int((rest - date.timeIntervalSince1970)/(60*60*24))
+        } else if state == .inNotification {
+            return 0
+        } else {
+            return Int((date.timeIntervalSince1970 - rest)/(60*60*24))
+        }
     }
     var resthour: Int {
-        let resth = Int(rest - date.timeIntervalSince1970)%(60*60*24)
-        return Int(resth/(60*60))
+        let time = rest - date.timeIntervalSince1970
+        if state == .beforeNotification {
+            let resth = Int(rest - date.timeIntervalSince1970)%(60*60*24)
+            return Int(resth/(60*60))
+        } else if state == .beforeNotification {
+            let resth = Int(date.timeIntervalSince1970 - rest)%(60*60*24)
+            return Int(resth/(60*60))
+        } else {
+            let resth = Int(date.timeIntervalSince1970 - rest)%(60*60*24)
+            return Int(resth/(60*60))
+        }
     }
     
     var body: some View {
@@ -51,13 +82,26 @@ struct CardView: View {
                     }
                     Spacer()
                     HStack {
-                        Text(String(
-                            format: String(localized: "card.timeFormat"),
-                            restday, resthour)
-                        )
-//                        Text("\(restday)日 \(resthour)時間後")
+                        if state == .expired {
+                            Text(String(
+                                format: String(localized: "card.timeFormat.expired"),
+                                restday, resthour)
+                            )
+                                .foregroundStyle(.white)
+                        } else if state == .beforeNotification {
+                            Text(String(
+                                format: String(localized: "card.timeFormat.beforeNotification"),
+                                restday, resthour)
+                            )
+                                .foregroundStyle(.white)
+                        } else {
+                            Text(String(
+                                format: String(localized: "card.timeFormat.inNotification"),
+                                resthour)
+                            )
                             .foregroundStyle(.white)
-//                            .fontWeight(.default)
+                        }
+
                         Spacer()
                         HStack {
                             ForEach(1..<6) { i in

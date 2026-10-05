@@ -174,25 +174,6 @@ struct ProblemView: View {
         }
     }
     
-    func generateTrigger(phase: Phase) -> TimeInterval {
-        switch phase {
-        case .phase1:
-            return 60*60*24-1
-        case .phase2:
-            return 60*60*24*2-1
-//            return 15
-        case .phase3:
-            return 60*60*24*6-1
-        case .phase4:
-            return 60*60*24*13-1
-        case .phase5:
-            return 60*60*24*29-1
-        default:
-            // completeも
-            return 0
-        }
-    }
-    
     func handleMainButton() {
         if nowSolvePhase == .solved {
             // 問題終了
@@ -344,5 +325,24 @@ struct textFields: TextFieldStyle {
                     .background(.white.opacity(0.25).shadow(.inner(color: .black.opacity(0.25), radius: 5, x: 5, y: 5)))
                     .allowsHitTesting(false)
             }
+    }
+}
+
+func generateTrigger(phase: Phase) -> TimeInterval {
+    switch phase {
+    case .phase1:
+        return 60*60*24-1
+    case .phase2:
+        return 60*60*24*3-1
+
+    case .phase3:
+        return 60*60*24*7-1
+    case .phase4:
+        return 60*60*24*14-1
+    case .phase5:
+        return 60*60*24*30-1
+    default:
+        // completeも
+        return 0
     }
 }
