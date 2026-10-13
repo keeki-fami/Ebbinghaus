@@ -32,30 +32,34 @@ struct CardView: View {
             return .expired
         }
     }
-    var restday: Int {
-        let time = rest - date.timeIntervalSince1970
-        if state == .beforeNotification {
-            return Int((rest - date.timeIntervalSince1970)/(60*60*24))
-        } else if state == .inNotification {
-            return 0
-        } else {
-            return Int((date.timeIntervalSince1970 - rest)/(60*60*24))
+    var timeDescription: String {
+        let remaining = rest - date.timeIntervalSince1970
+        let duration: TimeInterval
+        switch state {
+        case .beforeNotification:
+            duration = max(0, remaining)
+        case .inNotification:
+            duration = max(0, 24 * 60 * 60 + remaining)
+        case .expired:
+            duration = -remaining
         }
-    }
-    var resthour: Int {
-        let time = rest - date.timeIntervalSince1970
-        if state == .beforeNotification {
-            let resth = Int(rest - date.timeIntervalSince1970)%(60*60*24)
-            return Int(resth/(60*60))
-        } else if state == .beforeNotification {
-            let resth = Int(date.timeIntervalSince1970 - rest)%(60*60*24)
-            return Int(resth/(60*60))
-        } else {
-            let resth = Int(date.timeIntervalSince1970 - rest)%(60*60*24)
-            return Int(resth/(60*60))
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = duration >= 24 * 60 * 60 ? [.day, .hour] : [.hour]
+        formatter.unitsStyle = .full
+        formatter.zeroFormattingBehavior = .dropAll
+        let time = formatter.string(from: duration) ?? ""
+        let format: String
+        switch state {
+        case .beforeNotification:
+            format = String(localized: "countdown.before", table: "Countdown")
+        case .inNotification:
+            format = String(localized: "countdown.due", table: "Countdown")
+        case .expired:
+            format = String(localized: "countdown.expired", table: "Countdown")
         }
+        return String(format: format, time)
     }
-    
+
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
             .fill(
@@ -82,25 +86,8 @@ struct CardView: View {
                     }
                     Spacer()
                     HStack {
-                        if state == .expired {
-                            Text(String(
-                                format: String(localized: "card.timeFormat.expired"),
-                                restday, resthour)
-                            )
-                                .foregroundStyle(.white)
-                        } else if state == .beforeNotification {
-                            Text(String(
-                                format: String(localized: "card.timeFormat.beforeNotification"),
-                                restday, resthour)
-                            )
-                                .foregroundStyle(.white)
-                        } else {
-                            Text(String(
-                                format: String(localized: "card.timeFormat.inNotification"),
-                                resthour)
-                            )
+                        Text(timeDescription)
                             .foregroundStyle(.white)
-                        }
 
                         Spacer()
                         HStack {
