@@ -10,30 +10,23 @@ struct ProblemCardView: View {
     let problem: String
     let answer: String
     var body: some View {
-        Rectangle()
-            .fill(
-                .white
-            )
-            .frame(
-                width: 300,
-                height: 100
-            )
-            .overlay() {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("\(problem)")
-                            .font(.largeTitle)
-                        Text("\(answer)")
-                            .fontWeight(.medium)
-                    }
-                    Spacer()
-                }
-                .padding()
+        HStack(alignment: .top, spacing: 12) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(problem)
+                    .font(.title2)
+                Text(answer)
+                    .fontWeight(.medium)
             }
-            .overlay(alignment: .trailing) {
-                Text(">")
-                    .padding()
-                    .frame(maxWidth :50, maxHeight: .infinity)
-            }
+            .multilineTextAlignment(.leading)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            Image(systemName: "chevron.right")
+                .accessibilityHidden(true)
+        }
+        .padding()
+        .frame(width: 300, alignment: .leading)
+        .frame(minHeight: 100)
+        .background(.white, in: RoundedRectangle(cornerRadius: 20))
     }
 }
