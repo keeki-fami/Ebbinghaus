@@ -66,6 +66,14 @@ struct ProblemCreatingView: View {
         case keyword
     }
     
+    private var canAdd: Bool {
+        !problem.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !answer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        (!isKeyword || (!keyword.isEmpty && keyword.allSatisfy {
+            !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        }))
+    }
+
     var body: some View {
 //        NavigationStack {
          VStack {
@@ -175,17 +183,8 @@ struct ProblemCreatingView: View {
             }
             
             Button(action: {
-                var flag: Bool = true
-                for word in keyword {
-                    if word.text.isEmpty {
-                        flag = false
-                    }
-                }
-                if keyword.isEmpty {
-                    flag = false
-                }
                 if focus == nil {
-                    if !(problem.isEmpty || answer.isEmpty) && (!isKeyword || (isKeyword && flag)) {
+                    if canAdd {
                         if !afterAdd {
                             // 空のところがあったらアラートを出す。
                             print(isKeyword)
@@ -223,16 +222,18 @@ struct ProblemCreatingView: View {
                 }
             }, label: {
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(!(problem.isEmpty || answer.isEmpty) && focus == nil ? .blue : .white)
+                    .fill(canAdd && focus == nil ? .blue : .white)
                     .shadow(color: .black.opacity(0.25), radius: 5)
                     .frame(maxWidth: 350,  maxHeight: 50)
                     .padding()
                     .overlay() {
-                         Text(!(problem.isEmpty || answer.isEmpty) && focus == nil ? String(localized: "button.add") : String(localized: "button.determine"))
+                         Text(focus == nil ? String(localized: "button.add") : String(localized: "button.determine"))
                              .fontWeight(.medium)
-                             .foregroundStyle(!(problem.isEmpty || answer.isEmpty) && focus == nil ? .white : .black)
+                             .foregroundStyle(canAdd && focus == nil ? .white : .black)
                      }
             })
+            .disabled(!canAdd && focus == nil)
+            .opacity(!canAdd && focus == nil ? 0.45 : 1)
         }
         .background(
             Color.blue.opacity(0.1)

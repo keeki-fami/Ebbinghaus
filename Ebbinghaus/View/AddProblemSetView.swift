@@ -35,6 +35,17 @@ struct AddProblemSetView: View {
         case complete
     }
     
+    private var canContinue: Bool {
+        switch nowPhase {
+        case .phase1:
+            return !problemCreatingViewModel.problems.isEmpty
+        case .phase2:
+            return !setName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        case .phase3:
+            return true
+        }
+    }
+
     var body: some View {
         VStack {
             Rectangle()
@@ -50,10 +61,15 @@ struct AddProblemSetView: View {
                          Text("")
                      }
                  }
-            Spacer()
+            if nowPhase != .phase2 {
+                Spacer()
+            }
             Text(nowPhase == .phase2 ? String(localized: "addProblem.step2.description") : nowPhase == .phase1 ? String(localized: "addProblem.step1.creatingProblem.description") : "nil")
                 .fontWeight(.medium)
-            Spacer()
+                .padding(.top, nowPhase == .phase2 ? 24 : 0)
+            if nowPhase != .phase2 {
+                Spacer()
+            }
             // 問題セット名
              if nowPhase == .phase2 {
                  TextField(String(localized: "addProblem.step2.textField"), text: $setName)
@@ -62,6 +78,11 @@ struct AddProblemSetView: View {
                     .focused($focus, equals: .setName)
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                    .padding(.top, 24)
+                    .onAppear {
+                        focus = .setName
+                    }
                 
             } else if nowPhase == .phase1 {
                 ScrollView {
@@ -128,7 +149,7 @@ struct AddProblemSetView: View {
                         withAnimation {
                             focus = nil
                         }
-                    } else {
+                    } else if canContinue {
                         let problemset = ProblemSet(setName: setName, problem: problemCreatingViewModel.problems, notifyDate: pushedDate.timeIntervalSince1970 + 60*60*24-10, status: .phase1)
                         
                         modelContext.insert(problemset)
@@ -144,16 +165,18 @@ struct AddProblemSetView: View {
                 
             }, label: {
                 RoundedRectangle(cornerRadius: 10)
-                    .fill((focus == nil) && !setName.isEmpty && nowPhase == .phase2  ? .blue : .white)
+                    .fill(canContinue && focus == nil  ? .blue : .white)
                     .shadow(color: .black.opacity(0.25), radius: 5)
                     .frame(maxWidth: 350,  maxHeight: 50)
                     .padding()
                     .overlay() {
                          Text(focus == nil ? String(localized: "button.add") : String(localized: "button.determine"))
                              .fontWeight(.medium)
-                             .foregroundStyle((focus == nil) && !setName.isEmpty && nowPhase == .phase2 ? .white : .black)
+                             .foregroundStyle(canContinue && focus == nil ? .white : .black)
                       }
             })
+            .disabled(!canContinue && focus == nil)
+            .opacity(!canContinue && focus == nil ? 0.45 : 1)
         }
         .background(
             Color.blue.opacity(0.1)
@@ -211,9 +234,6 @@ struct AddProblemSetView: View {
         .contentShape(Rectangle())
         .onTapGesture {
             focus = nil
-        }
-        .onAppear {
-            focus = .setName
         }
         .alert(String(localized: "addProblem.step1.error.title"), isPresented: $isAlert, actions: {
             Button("OK") {}
