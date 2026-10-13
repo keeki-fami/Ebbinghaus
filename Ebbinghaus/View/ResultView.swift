@@ -10,38 +10,68 @@ import ConfettiSwiftUI
 struct ResultView: View {
     @Binding var path: NavigationPath
     @State private var appear1 = false
+    @State private var selectedPage = 0
     let resultViewData: ResultViewData
     let window = UIApplication.shared.connectedScenes.first as? UIWindowScene
     //    window.screen.bounds.height
+    private var isPerfect: Bool {
+        resultViewData.correct > 0 && resultViewData.incorrect == 0
+    }
+
+    private var feedback: String {
+        if isPerfect {
+            return String(localized: "result.feedback.perfect")
+        } else if resultViewData.correct > 0 {
+            return String(localized: "result.feedback.partial")
+        } else {
+            return String(localized: "result.feedback.retry")
+        }
+    }
+
     var body: some View {
         GeometryReader {geometry in
             VStack {
                 VStack {
-                    Text("Finish!")
+                    Text(String(localized: "result.finish"))
                         .foregroundStyle(.white)
                         .font(.largeTitle.bold())
                         .padding()
-                    Text(String(localized: "result.text"))
+                    Text(isPerfect ? String(localized: "result.text") : String(localized: "result.completed"))
                         .foregroundStyle(.white)
                 }
                 .frame(height: geometry.size.height/4)
-                Text(String(localized: "result.feedback.text"))
+                Text(feedback)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
                     .foregroundStyle(.white)
-                TabView {
-                    Tab("Account", systemImage: "earth") {
+                TabView(selection: $selectedPage) {
+                    Tab("Account", systemImage: "earth", value: 0) {
                         ResultViewCount(resultViewData: resultViewData)
                     }
-                    Tab("Account", systemImage: "earth") {
+                    Tab("Account", systemImage: "earth", value: 1) {
                         ResultViewCorrect(resultViewData: resultViewData)
                     }
-                    Tab("Account", systemImage: "earth") {
-                        ResultViewIncorrect(incorrectProblem: resultViewData.incorrectProblem, geometry: geometry)
+                    Tab("Account", systemImage: "earth", value: 2) {
+                        ResultViewIncorrect(incorrectProblem: resultViewData.incorrectProblem, incorrectCount: resultViewData.incorrect, geometry: geometry)
                     }
-                    Tab("Account", systemImage: "earth") {
+                    Tab("Account", systemImage: "earth", value: 3) {
                         ResultViewNext(resultViewData: resultViewData)
                     }
                 }
-                .tabViewStyle(.page)
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .safeAreaInset(edge: .bottom, spacing: 0) {
+                    HStack(spacing: 8) {
+                        ForEach(0..<4) { index in
+                            Circle()
+                                .fill(index == selectedPage ? .white : .white.opacity(0.4))
+                                .frame(width: 7, height: 7)
+                        }
+                    }
+                    .padding(.vertical, 12)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(Text(String(localized: "result.page")))
+                    .accessibilityValue("\(selectedPage + 1) / 4")
+                }
                 .frame(height: geometry.size.height/2)
                 .overlay() {
                     RoundedRectangle(cornerRadius: 10)
@@ -73,14 +103,14 @@ struct ResultView: View {
                 .ignoresSafeArea()
         }
         .onAppear() {
-            appear1 = true
+            appear1 = isPerfect
         }
         .navigationBarBackButtonHidden(true)
     }
     func shareOnTwitter() {
         let text = String(
             format: String(localized: "result.xPost"),
-            resultViewData.nextPhase.rawValue - 1, resultViewData.problemSet
+            resultViewData.reviewNumber, resultViewData.problemSet
         )
         let encodedText = text.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
         
@@ -94,6 +124,7 @@ struct ResultView: View {
 
 struct ResultViewIncorrect: View {
     let incorrectProblem: IncorrectProblem?
+    let incorrectCount: Int
     let geometry: GeometryProxy
     var body: some View {
         ScrollView {
@@ -123,6 +154,9 @@ struct ResultViewIncorrect: View {
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(.blue, lineWidth: 1)
                     }
+                } else if incorrectCount > 0 {
+                    Text(String(localized: "result.feedback.retry"))
+                        .padding()
                 } else {
                     VStack {
                         Text("🎉")
@@ -147,7 +181,7 @@ struct ResultViewCorrect: View {
              Text(String(localized: "result.feedback2.title1"))
                  .font(.largeTitle.bold())
              
-             Text("\(resultViewData.correct*100 / (resultViewData.correct + resultViewData.incorrect))%")
+             Text("\(resultViewData.correct * 100 / max(1, resultViewData.correct + resultViewData.incorrect))%")
                  .font(.largeTitle.bold())
                  .padding()
              VStack {
@@ -196,11 +230,11 @@ struct ResultViewCount: View {
       }
      var body: some View {
          VStack {
-//             Text("\(resultViewData.nextPhase.rawValue-1)回目の復習")
+//             Text("\(resultViewData.reviewNumber)回目の復習")
              Text(
                 String(
                     format: String(localized: "result.feedback1.title"),
-                    resultViewData.nextPhase.rawValue-1)
+                    resultViewData.reviewNumber)
              )
                  .foregroundStyle(.white)
                  .font(.largeTitle.bold())
@@ -221,7 +255,7 @@ struct ResultViewCount: View {
                      }
                  }
              }
-             Text(String(localized: "result.feedback1.text1"))
+             Text(message)
                  .foregroundStyle(.white)
                  .padding()
          }
@@ -239,4 +273,11 @@ struct ResultViewCount: View {
         incorrect: 1
     )
     ResultView(path: $path, resultViewData: resultViewData)
+}
+
+extension ResultViewData {
+    var reviewNumber: Int {
+        let advanced = UserDefaults.standard.bool(forKey: "isUpdateStatus")
+        return max(1, nextPhase.rawValue - (advanced ? 1 : 0))
+    }
 }

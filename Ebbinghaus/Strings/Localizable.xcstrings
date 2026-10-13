@@ -1,6 +1,91 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "result.feedback.perfect": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every answer was correct. Well done!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全問正解です！よくできました。"
+          }
+        }
+      }
+    },
+    "result.feedback.partial": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You got some answers right. Revisit the ones you missed."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正解した問題もありました。間違えた問題を確認しましょう。"
+          }
+        }
+      }
+    },
+    "result.feedback.retry": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This was a tough round. Check the answers and try again."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今回は難しかったですね。解答を確認して、もう一度挑戦しましょう。"
+          }
+        }
+      }
+    },
+    "result.completed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review complete"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "復習が終わりました"
+          }
+        }
+      }
+    },
+    "result.page": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Result page"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "結果のページ"
+          }
+        }
+      }
+    },
     "" : {
 
     },
@@ -388,13 +473,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The phase will not be updated this time."
+            "value" : "This is an early review. Your review progress and next review date will stay the same."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "今回はphaseが更新されません"
+            "value" : "復習時刻より前の練習です。復習の進み具合と次回の復習日時は変わりません。"
           }
         }
       }
@@ -637,13 +722,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "These are problems that are recommended for review starting today."
+            "value" : "These problem sets have not reached their scheduled review time yet."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "今日以降、復習すると良い問題です。"
+            "value" : "まだ復習時刻になっていない問題集です。"
           }
         }
       }
@@ -828,13 +913,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "These problem sets are recommended for review starting tomorrow."
+            "value" : "These problem sets have not reached their scheduled review time yet."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "明日以降に復習すると良い問題集です。"
+            "value" : "まだ復習時刻になっていない問題集です。"
           }
         }
       }
@@ -930,13 +1015,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "feedback"
+            "value" : "Check your answers and plan your next review."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "フィードバック"
+            "value" : "解答を確認して、次の復習につなげましょう。"
           }
         }
       }
@@ -1083,13 +1168,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This is currently the problem you have answered incorrectly the most times. Let's get it right next time!"
+            "value" : "Here is a question you missed in this review. Try it again next time!"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "現在、間違えた回数が最も多い問題です。次は正解しましょう！"
+            "value" : "今回の復習で間違えた問題です。次回もう一度挑戦しましょう。"
           }
         }
       }
