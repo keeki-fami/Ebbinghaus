@@ -260,7 +260,7 @@ struct ProblemView: View {
                     }
                 } else {
                     // 一問一答
-                    if problemSet.problem![nowProblem].answer == inputText {
+                    if normalizedAnswer(problemSet.problem![nowProblem].answer) == normalizedAnswer(inputText) {
                         isSuccess = true
                         correctCount += 1
                         generator.prepare()
@@ -304,8 +304,10 @@ struct ProblemView: View {
         var flag = true
         let keywords = problemSet.problem![nowProblem].keyword
         checkList = Dictionary.init()
-        for (i, word) in keywords.enumerated() {
-            if !inputText.contains(word) {
+        let normalizedInput = normalizedAnswer(inputText)
+        for word in keywords {
+            let normalizedKeyword = normalizedAnswer(word)
+            if normalizedKeyword.isEmpty || !normalizedInput.contains(normalizedKeyword) {
                 flag = false
                 checkList[word] = false
             } else {
@@ -345,4 +347,11 @@ func generateTrigger(phase: Phase) -> TimeInterval {
         // completeも
         return 0
     }
+}
+
+/// Keep meaningful punctuation, accents and internal spaces when comparing answers.
+func normalizedAnswer(_ text: String) -> String {
+    text.folding(options: [.caseInsensitive, .widthInsensitive], locale: Locale(identifier: "en_US_POSIX"))
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+        .precomposedStringWithCanonicalMapping
 }
